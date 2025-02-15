@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,5 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::resource('users', UserController::class);
+Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
+Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf');
 
 require __DIR__.'/auth.php';

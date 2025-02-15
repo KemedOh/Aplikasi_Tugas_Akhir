@@ -21,6 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'asal_sekolah',
+        'nama_ayah',
+        'nama_ibu',
+        'nomor_telepon',
+        'nomor_telepon_ortu',
     ];
 
     /**
@@ -44,5 +52,25 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public static function rules($role)
+    {
+        $rules = [
+            'nama' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+        ];
+
+        if ($role === 'mahasiswa') {
+            $rules['tanggal_lahir'] = 'required|date';
+            $rules['jenis_kelamin'] = 'required|in:L,P';
+            $rules['asal_sekolah'] = 'required|string|max:150';
+        }
+
+        return $rules;
+    }
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

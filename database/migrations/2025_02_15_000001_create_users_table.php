@@ -17,6 +17,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->date('tanggal_lahir')->nullable();
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
+            $table->string('asal_sekolah', 150)->nullable();
+            $table->string('nama_ayah', 150)->nullable();
+            $table->string('nama_ibu', 150)->nullable();
+            $table->string('nomor_telepon', 20)->nullable();
+            $table->string('nomor_telepon_ortu', 20)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -37,9 +45,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');
