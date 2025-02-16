@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\role;
 use App\Models\User;
@@ -37,6 +38,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+try {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -54,6 +56,10 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
+        } catch (\Exception $e) {
+        Log::error('Gagal menyimpan user: ' . $e->getMessage());
+        return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+    }
     }
 
     /**
@@ -93,7 +99,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if ($user->role->role_name === 'Admin') {
+        if ($user->role->role_nama === 'Admin') {
             if (Auth::user()->id === $user->id) {
                 return redirect()->route('users.index')->with('error', 'Anda tidak bisa menghapus diri sendiri.');
             }
@@ -110,7 +116,7 @@ class UserController extends Controller
 public function exportPDF()
     {
         $users = User::select(
-            'id', 'name', 'email', 'tanggal_lahir', 'jenis_kelamin',
+            'id', 'nama', 'email', 'tanggal_lahir', 'jenis_kelamin',
             'asal_sekolah', 'nama_ayah', 'nama_ibu', 'nomor_telepon',
             'nomor_telepon_ortu'
         )->get();
