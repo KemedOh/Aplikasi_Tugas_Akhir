@@ -74,45 +74,36 @@ try {
     /**
      * Update the user data in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:8',
-            'role_id' => 'required|exists:roles,id',
-        ]);
+    $user = User::findOrFail($id);
 
-        $user->name = $validatedData['name'];
-        $user->email = $validatedData['email'];
-        if (!empty($validatedData['password'])) {
-            $user->password = Hash::make($validatedData['password']);
-        }
-        $user->role_id = $validatedData['role_id'];
-        $user->save();
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        'role_id' => 'required|exists:roles,id',
+    ]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui!');
+    $user->update($validatedData);
+
+    return response()->json(['message' => 'User berhasil diperbarui']);
     }
 
     /**
      * Remove the user from storage.
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        if ($user->role->role_nama === 'Admin') {
-            if (Auth::user()->id === $user->id) {
-                return redirect()->route('users.index')->with('error', 'Anda tidak bisa menghapus diri sendiri.');
-            }
-            return redirect()->route('users.index')->with('error', 'Anda tidak bisa menghapus admin lain.');
-        }
+    $user = User::findOrFail($id);
+    $user->delete();
 
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
+    return response()->json(['message' => 'User berhasil dihapus']);
     }
     public function exportExcel()
-{
+    {
     return Excel::download(new UsersExport, 'users.xlsx');
-}
+    }
+
 public function exportPDF()
     {
         $users = User::select(
