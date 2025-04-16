@@ -24,7 +24,7 @@
     
                 <!-- Tombol Mulai Pertanyaan -->
                 <div class="mt-6">
-                    <a href="#"
+                    <a href="{{ __('questions') }}"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
                         Mulai Pertanyaan
                     </a>

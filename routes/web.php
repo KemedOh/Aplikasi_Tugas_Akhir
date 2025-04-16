@@ -5,10 +5,12 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MajorController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\UserAnswerController;
+use Illuminate\Contracts\View\View;
 
 Route::get('/', function () {
-    return view('welcome');
+    return View('welcome');
 });
 
 Route::get('/dashboard', function () {
@@ -22,9 +24,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/questions', [QuestionController::class, 'index']);
+    Route::get('/questions', [QuestionController::class, 'showQuestionnaire'])->name('questions.show');
+    Route::get('/recommendations', action: [RecommendationController::class, 'show'])->name('recommendations.show');
     Route::post('/answers', [QuestionController::class, 'store']);
 });
+Route::post('/pertanyaan', [QuestionController::class, 'submitAll'])->name('questions.submitAll');
+
 
 Route::resource('users', UserController::class);
 Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
@@ -33,6 +38,8 @@ Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('use
 Route::resource('majors', MajorController::class);
 Route::resource('questions', QuestionController::class);
 Route::resource('user-answers', UserAnswerController::class);
+
+
 
 
 require __DIR__.'/auth.php';

@@ -2,70 +2,220 @@
 
 namespace Database\Seeders;
 
-use App\Models\Question;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Question;
+use App\Models\QuestionOption;
 
 class QuestionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        $questions = [
-            // D3 Manajemen Pemasaran
-            ['question' => 'Apakah Anda menikmati berkomunikasi dengan orang lain?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda suka merancang strategi untuk menarik perhatian orang?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda tertarik untuk memahami perilaku konsumen?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda suka berbicara di depan umum atau melakukan presentasi?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda memiliki ketertarikan dalam dunia periklanan dan promosi?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda senang menganalisis tren pasar dan kebutuhan pelanggan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda suka bekerja dalam tim dan berkoordinasi dengan banyak orang?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda tertarik dalam bidang digital marketing dan media sosial?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda senang dengan tantangan dalam mencapai target penjualan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
-            ['question' => 'Apakah Anda merasa percaya diri dalam membangun relasi dengan klien atau pelanggan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 1],
+        // 🧠 Pertanyaan Umum (ya/tidak) dengan major_id dinamis sesuai konteks
+        $generalQuestions = [
+            // Pertanyaan yang lebih mengarah ke Teknik Informatika
+            [
+                'text' => 'Saya lebih suka bekerja dengan data daripada dengan orang.',
+                'major_id' => 1,
+            ],
+            [
+                'text' => 'Saya cenderung tertarik dengan bagaimana suatu mesin bekerja.',
+                'major_id' => 1,
+            ],
+            [
+                'text' => 'Saya senang mencoba memecahkan masalah logika.',
+                'major_id' => 1,
+            ],
+            [
+                'text' => 'Saya suka merancang sesuatu di komputer.',
+                'major_id' => 1,
+            ],
+            [
+                'text' => 'Saya menikmati pekerjaan yang melibatkan teknologi dan inovasi.',
+                'major_id' => 1,
+            ],
 
-            // D3 Manajemen Keuangan Perbankan
-            ['question' => 'Apakah Anda merasa nyaman bekerja dengan angka dan perhitungan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda tertarik untuk mengelola keuangan dan investasi?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda memiliki ketelitian dalam mencatat transaksi keuangan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda tertarik dengan konsep perbankan dan ekonomi?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda merasa puas jika berhasil menyusun laporan keuangan yang akurat?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda senang menganalisis keuntungan dan risiko dalam suatu keputusan keuangan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda ingin memahami bagaimana sistem perbankan bekerja?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda merasa nyaman dalam memberikan layanan kepada nasabah atau klien?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda memiliki minat dalam perencanaan keuangan pribadi atau bisnis?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
-            ['question' => 'Apakah Anda tertarik dengan investasi seperti saham, obligasi, atau reksa dana?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 2],
+            // Pertanyaan yang lebih mengarah ke Manajemen Keuangan Perbankan
+            [
+                'text' => 'Saya lebih suka membuat laporan keuangan daripada menggambar.',
+                'major_id' => 4,
+            ],
+            [
+                'text' => 'Saya tertarik mengatur keuangan dan mencatat pengeluaran.',
+                'major_id' => 4,
+            ],
+            [
+                'text' => 'Saya merasa nyaman membuat keputusan finansial.',
+                'major_id' => 4,
+            ],
+            [
+                'text' => 'Saya cenderung senang berurusan dengan masalah perbankan.',
+                'major_id' => 4,
+            ],
+            [
+                'text' => 'Saya lebih suka mengelola uang daripada membuat laporan kreatif.',
+                'major_id' => 4,
+            ],
 
-            // D2 Teknik Otomotif
-            ['question' => 'Apakah Anda suka membongkar dan merakit mesin atau alat mekanik?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda tertarik untuk memahami cara kerja kendaraan bermotor?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda lebih suka belajar secara praktik daripada teori?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda merasa puas saat berhasil memperbaiki sesuatu yang rusak?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda tertarik dengan teknologi terbaru dalam dunia otomotif?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda senang bekerja dengan tangan dan menggunakan alat-alat teknik?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda ingin memahami cara meningkatkan performa mesin kendaraan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda memiliki ketertarikan dalam bidang keselamatan dan efisiensi kendaraan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda senang dengan tantangan dalam menyelesaikan masalah teknis?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
-            ['question' => 'Apakah Anda tertarik untuk bekerja di industri otomotif atau bengkel kendaraan?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 3],
+            // Pertanyaan yang lebih mengarah ke Teknik Otomotif
+            [
+                'text' => 'Saya lebih suka memperbaiki sesuatu yang rusak.',
+                'major_id' => 2,
+            ],
+            [
+                'text' => 'Saya menikmati bekerja dengan alat-alat mekanik.',
+                'major_id' => 2,
+            ],
+            [
+                'text' => 'Saya lebih suka berurusan dengan mesin daripada berinteraksi dengan orang.',
+                'major_id' => 2,
+            ],
+            [
+                'text' => 'Saya tertarik untuk mempelajari teknik otomotif.',
+                'major_id' => 2,
+            ],
+            [
+                'text' => 'Saya lebih suka bekerja dengan mesin daripada dengan perangkat lunak.',
+                'major_id' => 2,
+            ],
 
-            // D2 Teknik Informatika
-            ['question' => 'Apakah Anda menikmati logika dan pemecahan masalah dalam pemrograman?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda tertarik untuk membuat aplikasi atau website?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda memiliki keinginan untuk memahami bagaimana sistem komputer bekerja?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda tertarik dengan keamanan siber dan perlindungan data?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda suka mencoba memecahkan masalah dengan kode atau algoritma?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda tertarik dengan kecerdasan buatan dan teknologi terbaru?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda senang mempelajari bahasa pemrograman seperti Python atau JavaScript?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda merasa puas saat berhasil memperbaiki bug dalam sebuah program?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda tertarik dengan jaringan komputer dan cara kerja internet?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-            ['question' => 'Apakah Anda ingin bekerja sebagai pengembang perangkat lunak atau analis sistem?', 'type' => 'MCQ', 'category' => 'spesifik', 'major_id' => 4],
-
+            // Pertanyaan yang lebih mengarah ke Manajemen Pemasaran
+            [
+                'text' => 'Saya senang mempengaruhi orang lain untuk membeli sesuatu.',
+                'major_id' => 3,
+            ],
+            [
+                'text' => 'Saya lebih suka berinteraksi dengan orang lain di berbagai event.',
+                'major_id' => 3,
+            ],
+            [
+                'text' => 'Saya tertarik untuk mendalami dunia pemasaran produk.',
+                'major_id' => 3,
+            ],
+            [
+                'text' => 'Saya lebih suka berbicara di depan banyak orang.',
+                'major_id' => 3,
+            ],
+            [
+                'text' => 'Saya menikmati bekerja dengan ide kreatif dan inovatif.',
+                'major_id' => 3,
+            ]
         ];
 
-        foreach ($questions as $data) {
-            Question::create($data);
+        foreach ($generalQuestions as $item) {
+            Question::create([
+                'text' => $item['text'],
+                'category' => 'umum',
+                'answer_type' => 'boolean', // untuk ya/tidak
+                'major_id' => $item['major_id'],
+            ]);
+        }
+
+        // 🎯 Pertanyaan Mini Khusus Jurusan (pilihan ganda + jawaban benar)
+        $miniQuestions = [
+            // Teknik Informatika (D2)
+            [
+                'text' => 'Apa output dari kode: `echo 2 + "2";` dalam PHP?',
+                'major_id' => 1,
+                'options' => [
+                    ['2', false],
+                    ['22', false],
+                    ['4', true],
+                    ['Error', false],
+                ],
+            ],
+            [
+                'text' => 'Apa itu variabel dalam pemrograman?',
+                'major_id' => 1,
+                'options' => [
+                    ['Fungsi yang dapat dipanggil', false],
+                    ['Tempat menyimpan data', true],
+                    ['Metode untuk looping', false],
+                    ['Instruksi cetak data', false],
+                ],
+            ],
+
+            // Teknik Otomotif (D2)
+            [
+                'text' => 'Apa fungsi dari busi pada kendaraan bermotor?',
+                'major_id' => 2,
+                'options' => [
+                    ['Mendinginkan mesin', false],
+                    ['Menyuplai bahan bakar', false],
+                    ['Menyulut campuran udara dan bahan bakar', true],
+                    ['Menghidupkan aki', false],
+                ],
+            ],
+            [
+                'text' => 'Komponen apa yang mengatur suhu mesin agar stabil?',
+                'major_id' => 2,
+                'options' => [
+                    ['Radiator', true],
+                    ['Kampas kopling', false],
+                    ['Karburator', false],
+                    ['Silinder head', false],
+                ],
+            ],
+
+            // Manajemen Pemasaran (D3)
+            [
+                'text' => 'Apa yang dimaksud dengan segmentasi pasar?',
+                'major_id' => 3,
+                'options' => [
+                    ['Proses menurunkan harga', false],
+                    ['Pemberian diskon besar-besaran', false],
+                    ['Pembagian pasar ke dalam kelompok konsumen', true],
+                    ['Proses memasarkan barang digital', false],
+                ],
+            ],
+            [
+                'text' => 'Apa itu “branding”?',
+                'major_id' => 3,
+                'options' => [
+                    ['Penentuan harga produk', false],
+                    ['Proses distribusi barang', false],
+                    ['Citra dan identitas produk di mata konsumen', true],
+                    ['Proses membuka cabang baru', false],
+                ],
+            ],
+
+            // Manajemen Keuangan Perbankan (D3)
+            [
+                'text' => 'Apa arti dari istilah "likuiditas" dalam keuangan?',
+                'major_id' => 4,
+                'options' => [
+                    ['Kemampuan membayar hutang jangka pendek', true],
+                    ['Jumlah uang yang dipinjam', false],
+                    ['Risiko investasi', false],
+                    ['Laju inflasi', false],
+                ],
+            ],
+            [
+                'text' => 'Apa fungsi utama bank sentral?',
+                'major_id' => 4,
+                'options' => [
+                    ['Memberi pinjaman langsung ke masyarakat', false],
+                    ['Mengatur inflasi dan stabilitas moneter', true],
+                    ['Mengelola rekening tabungan', false],
+                    ['Menjual produk asuransi', false],
+                ],
+            ],
+        ];
+
+        foreach ($miniQuestions as $item) {
+            $question = Question::create([
+                'text' => $item['text'],
+                'category' => 'spesifik',
+                'answer_type' => 'choice',
+                'major_id' => $item['major_id'],
+            ]);
+
+            foreach ($item['options'] as [$text, $isCorrect]) {
+                QuestionOption::create([
+                    'question_id' => $question->id,
+                    'option_text' => $text,
+                    'is_correct' => $isCorrect,
+                ]);
+            }
+        }
     }
-}
 }
