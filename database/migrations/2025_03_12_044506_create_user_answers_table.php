@@ -7,16 +7,18 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void {
-        Schema::create('user_answers', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('question_id')->constrained()->onDelete('cascade');
-            $table->unsignedTinyInteger('value')->nullable(); // untuk boolean: 1 = Ya, 0 = Tidak
-            $table->foreignId('option_id')->nullable()->constrained('question_options')->onDelete('set null'); // untuk soal mini
-            $table->timestamps();
-        });
-    }
+public function up()
+{
+    Schema::create('user_answers', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        $table->foreignId('question_id')->constrained()->onDelete('cascade');
+        $table->unsignedInteger('value')->nullable(); // untuk boolean
+        $table->foreignId('option_id')->nullable()->constrained('question_options')->onDelete('cascade'); // untuk pilihan ganda
+        $table->timestamps();
+    });
+}
+
 
     public function down(): void {
         Schema::dropIfExists('user_answers');

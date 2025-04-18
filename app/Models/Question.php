@@ -11,19 +11,27 @@ class Question extends Model
 
     protected $fillable = ['question', 'type', 'category', 'major_id'];
 
-    // Relasi ke tabel Major (Pertanyaan mungkin berkaitan dengan satu Jurusan)
+    /**
+     * Relasi ke Major: Pertanyaan ini milik satu jurusan.
+     */
     public function major()
     {
         return $this->belongsTo(Major::class);
     }
 
-    // Relasi ke tabel UserAnswers (Satu Pertanyaan bisa dijawab banyak User)
+    /**
+     * Relasi ke UserAnswer: Pertanyaan ini bisa dijawab oleh banyak user.
+     */
     public function userAnswers()
     {
         return $this->hasMany(UserAnswer::class);
     }
+
+    /**
+     * Relasi ke QuestionOption: Pertanyaan memiliki beberapa opsi jawaban.
+     */
     public function options()
-{
-    return $this->hasMany(QuestionOption::class);
-}
+    {
+        return $this->hasMany(QuestionOption::class);
+    }
 }

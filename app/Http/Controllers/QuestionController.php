@@ -30,20 +30,26 @@ class QuestionController extends Controller
 
 public function submitAll(Request $request)
 {
+    // dd($request->input('answers'));
     $userId = Auth::id();
     $answers = $request->input('answers');
 
     foreach ($answers as $questionId => $answerData) {
-        $question = Question::findOrFail($questionId);
+        logger("QID: $questionId | Data: " . json_encode($answerData));
+    }
 
-        if ($question->answer_type === 'boolean') {
+    foreach ($answers as $questionId => $answerData) {
+        $question = Question::findOrFail($questionId);
+// dd($userId, $questionId, (int) $answerData['value']);
+
+        if ($question->answer_type == 'boolean') {
             UserAnswer::updateOrCreate(
                 [
                     'user_id' => $userId,
                     'question_id' => $questionId,
                 ],
                 [
-                    'value' => $answerData['value'],
+                    'value' => (int) $answerData['value'],
                     'option_id' => null,
                 ]
             );
@@ -58,6 +64,8 @@ public function submitAll(Request $request)
                     'option_id' => $answerData['option_id'],
                 ]
             );
+            // dd($userAnswer); // debug hasil
+
         }
     }
 
@@ -72,7 +80,7 @@ public function submitAll(Request $request)
     foreach ($userAnswers as $answer) {
         $majorId = $answer->question->major_id;
 
-        if ($answer->value === 1 && $majorId) {
+        if ($answer->value == 1 && $majorId) {
             $scores[$majorId] = ($scores[$majorId] ?? 0) + 1;
         }
     }

@@ -10,7 +10,7 @@ use App\Http\Controllers\UserAnswerController;
 use Illuminate\Contracts\View\View;
 
 Route::get('/', function () {
-    return View('welcome');
+    return View('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -38,6 +38,9 @@ Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('use
 Route::resource('majors', MajorController::class);
 Route::resource('questions', QuestionController::class);
 Route::resource('user-answers', UserAnswerController::class);
+
+Route::get('/recommendations/intermediate/{majorId}', [RecommendationController::class, 'intermediateResult'])->name('recommendations.intermediate');
+Route::get('/recommendations/final', [RecommendationController::class, 'finalResult'])->name('recommendations.final');
 
 
 

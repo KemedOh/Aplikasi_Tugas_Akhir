@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserAnswer extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['user_id', 'question_id', 'answer'];
+protected $fillable = ['user_id', 'question_id', 'value', 'option_id'];
 
     // Relasi ke tabel User (Satu Jawaban dimiliki oleh satu User)
     public function user()
