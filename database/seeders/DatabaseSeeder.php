@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(MajorSeeder::class);
         $this->call(QuestionSeeder::class);
-        
+        $this->call(SuperadminSeeder::class);
     }
 }

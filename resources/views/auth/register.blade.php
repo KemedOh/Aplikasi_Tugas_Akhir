@@ -9,7 +9,7 @@
                     DAFTAR SEKARANG
                 </p>
                 <h1 class="text-3xl font-extrabold text-[#0B0B3B] mb-3 leading-tight">
-                    Segera Daftar di Politeknik LP3I Tasikmalaya
+                    Segera Daftar di JuruAI Politeknik LP3I Tasikmalaya
                 </h1>
 
                 <div class="space-y-6">
@@ -19,7 +19,7 @@
                             Name
                         </label>
                         <input id="name" name="name" type="text" value="{{ old('name') }}"
-                               class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
+                               class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
                                required />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
@@ -30,7 +30,7 @@
                             E-Mail
                         </label>
                         <input id="email" name="email" type="email" value="{{ old('email') }}"
-                               class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
+                               class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
                                required />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
@@ -41,7 +41,7 @@
                             Password
                         </label>
                         <input id="password" name="password" type="password"
-                               class="w-full px-3 py-2 text-[#3B4BFF] placeholder-[#3B4BFF] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
+                               class="w-full px-3 py-2 text-[#000000] placeholder-[#3B4BFF] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
                                required />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
@@ -52,7 +52,7 @@
                             Confirm Password
                         </label>
                         <input id="password_confirmation" name="password_confirmation" type="password"
-                               class="w-full px-3 py-2 text-[#3B4BFF] placeholder-[#3B4BFF] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
+                               class="w-full px-3 py-2 text-[#000000] placeholder-[#3B4BFF] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
                                required />
                         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                     </div>
@@ -83,7 +83,7 @@
                                 Tanggal Lahir
                             </label>
                             <input id="tanggal_lahir" name="tanggal_lahir" type="date" value="{{ old('tanggal_lahir') }}"
-                                   class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
                             <x-input-error :messages="$errors->get('tanggal_lahir')" class="mt-2" />
                         </div>
 
@@ -96,12 +96,12 @@
                                 <label class="inline-flex items-center">
                                     <input type="radio" name="jenis_kelamin" value="L"
                                            {{ old('jenis_kelamin') == 'L' ? 'checked' : '' }} class="form-radio text-indigo-600">
-                                    <span class="ml-2">Laki-Laki</span>
+                                    <span class="ml-2 text-black">Laki-Laki</span>
                                 </label>
                                 <label class="inline-flex items-center">
                                     <input type="radio" name="jenis_kelamin" value="P"
                                            {{ old('jenis_kelamin') == 'P' ? 'checked' : '' }} class="form-radio text-indigo-600">
-                                    <span class="ml-2">Perempuan</span>
+                                    <span class="ml-2 text-black">Perempuan</span>
                                 </label>
                             </div>
                             <x-input-error :messages="$errors->get('jenis_kelamin')" class="mt-2" />
@@ -113,7 +113,7 @@
                                 Asal Sekolah
                             </label>
                             <input id="asal_sekolah" name="asal_sekolah" type="text" value="{{ old('asal_sekolah') }}"
-                                   class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
                             <x-input-error :messages="$errors->get('asal_sekolah')" class="mt-2" />
                         </div>
 
@@ -123,7 +123,7 @@
                                 Nama Ayah
                             </label>
                             <input id="nama_ayah" name="nama_ayah" type="text" value="{{ old('nama_ayah') }}"
-                                   class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
                             <x-input-error :messages="$errors->get('nama_ayah')" class="mt-2" />
                         </div>
 
@@ -133,7 +133,7 @@
                                 Nama Ibu
                             </label>
                             <input id="nama_ibu" name="nama_ibu" type="text" value="{{ old('nama_ibu') }}"
-                                   class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
                             <x-input-error :messages="$errors->get('nama_ibu')" class="mt-2" />
                         </div>
 
@@ -143,7 +143,7 @@
                                 Nomor Telepon
                             </label>
                             <input id="nomor_telepon" name="nomor_telepon" type="text" value="{{ old('nomor_telepon') }}"
-                                   class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
                             <x-input-error :messages="$errors->get('nomor_telepon')" class="mt-2" />
                         </div>
 
@@ -153,7 +153,7 @@
                                 Nomor Telepon Orang Tua
                             </label>
                             <input id="nomor_telepon_ortu" name="nomor_telepon_ortu" type="text" value="{{ old('nomor_telepon_ortu') }}"
-                                   class="w-full px-3 py-2 text-[#A9B0D6] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
                             <x-input-error :messages="$errors->get('nomor_telepon_ortu')" class="mt-2" />
                         </div>
                     </div>
