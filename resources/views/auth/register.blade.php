@@ -63,14 +63,9 @@
                             Role
                         </label>
                         <select id="role_id" name="role_id"
-                                class="block mt-1 w-full border-[#A9B0D6] focus:border-[#3B4BFF] focus:ring-[#3B4BFF] rounded-md shadow-sm text-black"
-                                required>
-                            <option value="">Pilih Role</option>
-                            @foreach($roles as $role)
-                                <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
-                                    {{ ucfirst($role->role) }}
-                                </option>
-                            @endforeach
+                            class="block mt-1 w-full border-[#A9B0D6] focus:border-[#3B4BFF] focus:ring-[#3B4BFF] rounded-md shadow-sm text-black"
+                            required>
+                            <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>Mahasiswa</option>
                         </select>
                         <x-input-error :messages="$errors->get('role_id')" class="mt-2" />
                     </div>
