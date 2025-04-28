@@ -39,6 +39,8 @@ Route::post('/pertanyaan', [QuestionController::class, 'submitAll'])->name('ques
 Route::resource('users', UserController::class);
 Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
 Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf');
+Route::post('/update-user', [UserController::class, 'update'])->name('update.user');
+
 
 Route::resource('majors', MajorController::class);
 Route::resource('questions', QuestionController::class);

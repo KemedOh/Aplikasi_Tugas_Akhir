@@ -11,34 +11,33 @@ class UsersExport implements FromCollection, WithHeadings
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function collection()
-    {
-        return User::with('z')->select(
-            'name',
-            'email',
-            'tanggal_lahir',
-            'jenis_kelamin',
-            'asal_sekolah',
-            'nama_ayah',
-            'nama_ibu',
-            'nomor_telepon',
-            'nomor_telepon_ortu',
-            'z_id'
-        )->get()->map(function ($user) {
-            return [
-                'Nama' => $user->name,
-                'Email' => $user->email,
-                'Tanggal Lahir' => $user->tanggal_lahir ?? '-',
-                'Jenis Kelamin' => $user->jenis_kelamin ?? '-',
-                'Asal Sekolah' => $user->asal_sekolah ?? '-',
-                'Nama Ayah' => $user->nama_ayah ?? '-',
-                'Nama Ibu' => $user->nama_ibu ?? '-',
-                'No. Telepon' => $user->nomor_telepon ?? '-',
-                'No. Telepon Orang Tua' => $user->nomor_telepon_ortu ?? '-',
-                'z' => $user->z->z_name ?? '-',
-            ];
-        });
-    }
+public function collection()
+{
+    return User::select(
+        'name',
+        'email',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'asal_sekolah',
+        'nama_ayah',
+        'nama_ibu',
+        'nomor_telepon',
+        'nomor_telepon_ortu',
+    )->get()->map(function ($user) {
+        return [
+            'Nama' => $user->name,
+            'Email' => $user->email,
+            'Tanggal Lahir' => $user->tanggal_lahir ?? '-',
+            'Jenis Kelamin' => $user->jenis_kelamin ?? '-',
+            'Asal Sekolah' => $user->asal_sekolah ?? '-',
+            'Nama Ayah' => $user->nama_ayah ?? '-',
+            'Nama Ibu' => $user->nama_ibu ?? '-',
+            'No. Telepon' => $user->nomor_telepon ?? '-',
+            'No. Telepon Orang Tua' => $user->nomor_telepon_ortu ?? '-',
+        ];
+    });
+}
+
 
     public function headings(): array
     {

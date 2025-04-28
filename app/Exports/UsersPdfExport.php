@@ -4,13 +4,12 @@ namespace App\Exports;
 
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Contracts\View\View;
 
 class UsersPdfExport
 {
     public function download()
     {
-        $users = User::with('zz')->select(
+        $users = User::select(
             'name',
             'email',
             'tanggal_lahir',
@@ -19,8 +18,7 @@ class UsersPdfExport
             'nama_ayah',
             'nama_ibu',
             'nomor_telepon',
-            'nomor_telepon_ortu',
-            'zz_id'
+            'nomor_telepon_ortu'
         )->get()->map(function ($user) {
             return [
                 'name' => $user->name,
@@ -32,7 +30,6 @@ class UsersPdfExport
                 'nama_ibu' => $user->nama_ibu ?? '-',
                 'nomor_telepon' => $user->nomor_telepon ?? '-',
                 'nomor_telepon_ortu' => $user->nomor_telepon_ortu ?? '-',
-                'zz' => $user->zz->zz_name ?? '-',
             ];
         });
 

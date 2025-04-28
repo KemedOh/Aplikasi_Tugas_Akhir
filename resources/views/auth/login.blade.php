@@ -10,10 +10,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- ✅ Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -44,35 +43,36 @@
                     Daftar Sekarang.
                 </a>
             </p>
-            <form class="space-y-6" method="POST" action="{{ route('login') }}">
+
+            <form id="loginForm" class="space-y-6" method="POST" action="{{ route('login') }}">
                 @csrf
 
                 <!-- Email -->
-                <div>
-                    <label class="block text-sm font-semibold text-[#00426D] mb-1" for="email">E-Mail</label>
+                <div id="emailContainer">
+                    <label for="email" class="block text-sm font-semibold text-[#00426D] mb-1 flex items-center gap-1">
+                        E-Mail <span id="emailStar" class="text-red-500 text-lg"></span>
+                    </label>
                     <div class="relative">
-                        <input
-                            class="w-full border border-[#D9D9E3] rounded-lg py-3 px-4 pr-12 text-[#000000] placeholder-[#A3A3B7] focus:outline-none focus:ring-2 focus:ring-[#00AEB6]"
-                            id="email" placeholder="youremail@lp3i.ac.id" type="email" name="email"
-                            :value="old('email')" required autofocus autocomplete="username" />
+                        <input id="email" name="email" type="email" placeholder="youremail@lp3i.ac.id"
+                            autocomplete="username" value="{{ old('email') }}"
+                            class="w-full border border-[#D9D9E3] rounded-lg py-3 px-4 pr-12 placeholder-[#A3A3B7] text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#00AEB6]" />
                         <i class="fa-solid fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-[#A3A3B7]"></i>
                     </div>
                 </div>
 
                 <!-- Password -->
-                <div>
-                    <label class="block text-sm font-semibold text-[#00426D] mb-1" for="password">Password</label>
+                <div id="passwordContainer">
+                    <label for="password"
+                        class="block text-sm font-semibold text-[#00426D] mb-1 flex items-center gap-1">
+                        Password <span id="passwordStar" class="text-red-500 text-lg"></span>
+                    </label>
                     <div class="relative">
-                        <input
-                            class="w-full border border-[#D9D9E3] rounded-lg py-3 px-4 pr-12 text-[#000000] placeholder-[#A3A3B7] focus:outline-none focus:ring-2 focus:ring-[#00AEB6]"
-                            id="password" placeholder="****************" type="password" name="password" required
-                            autocomplete="current-password" />
-
-                        <!-- Tombol Toggle -->
+                        <input id="password" name="password" type="password" placeholder="****************"
+                            autocomplete="current-password"
+                            class="w-full border border-[#D9D9E3] rounded-lg py-3 px-4 pr-12 placeholder-[#A3A3B7] text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#00AEB6]" />
                         <button type="button" id="togglePassword" class="absolute right-2 top-1/2 -translate-y-1/2">
-                            <i class="fas fa-eye" id="toggleIcon"></i>
+                            <i id="toggleIcon" class="fas fa-eye"></i>
                         </button>
-
                     </div>
                 </div>
 
@@ -83,6 +83,7 @@
                     MASUK
                 </button>
             </form>
+
             <p class="text-[10px] text-[#A3A3B7] mt-8 max-w-[280px]">
                 Dengan mengklik tombol Masuk, Anda setuju dengan Kebijakan Privasi kami.
             </p>
@@ -102,17 +103,58 @@
         </script>
     @endif
 
-    <!-- ✅ Toggle Password -->
+    <!-- ✅ Script validasi input -->
     <script>
-        const togglePassword = document.querySelector('#togglePassword');
-        const passwordField = document.querySelector('#password');
-        const toggleIcon = document.querySelector('#toggleIcon');
+        const loginForm = document.getElementById('loginForm');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const emailStar = document.getElementById('emailStar');
+        const passwordStar = document.getElementById('passwordStar');
+        const emailInput = document.querySelector('#emailContainer input');
+        const passwordInput = document.querySelector('#passwordContainer input');
+
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            let valid = true;
+
+            // Reset state
+            emailStar.textContent = '';
+            passwordStar.textContent = '';
+            emailInput.classList.remove('border-red-500');
+            passwordInput.classList.remove('border-red-500');
+            emailInput.classList.add('border-[#D9D9E3]');
+            passwordInput.classList.add('border-[#D9D9E3]');
+
+            // Validasi email
+            if (email.value.trim() === '') {
+                emailStar.textContent = '✱';
+                emailInput.classList.remove('border-[#D9D9E3]');
+                emailInput.classList.add('border-red-500');
+                valid = false;
+            }
+
+            // Validasi password
+            if (password.value.trim() === '') {
+                passwordStar.textContent = '✱';
+                passwordInput.classList.remove('border-[#D9D9E3]');
+                passwordInput.classList.add('border-red-500');
+                valid = false;
+            }
+
+            if (valid) {
+                loginForm.submit();
+            }
+        });
+
+        // ✅ Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const toggleIcon = document.getElementById('toggleIcon');
 
         togglePassword.addEventListener('click', function () {
-            const isPassword = passwordField.getAttribute('type') === 'password';
-            passwordField.setAttribute('type', isPassword ? 'text' : 'password');
+            const isPassword = password.getAttribute('type') === 'password';
+            password.setAttribute('type', isPassword ? 'text' : 'password');
 
-            // Ganti icon
             toggleIcon.classList.toggle('fa-eye');
             toggleIcon.classList.toggle('fa-eye-slash');
         });

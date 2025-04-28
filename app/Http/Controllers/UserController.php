@@ -74,20 +74,41 @@ try {
     /**
      * Update the user data in storage.
      */
-    public function update(Request $request, $id)
-    {
+public function update(Request $request, $id)
+{
+    // Temukan user berdasarkan ID
     $user = User::findOrFail($id);
 
+    // Validasi data yang diterima dari form
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        'role_id' => 'required|exists:roles,id',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id, // Validasi email dengan pengecualian untuk email yang sama
+        'role_id' => 'required|exists:roles,id', // Validasi role_id harus ada dalam tabel roles
+        'asal_sekolah' => 'required|string|max:255',
+        'tanggal_lahir' => 'required|date',
+        'nomor_telepon' => 'required|string|max:15',
+        'nama_ayah' => 'required|string|max:255',
+        'nama_ibu' => 'required|string|max:255',
+        'nomor_telepon_ortu' => 'required|string|max:15',
     ]);
 
-    $user->update($validatedData);
+    // Perbarui data pengguna berdasarkan data yang telah divalidasi
+    $user->update([
+        'name' => $validatedData['name'],
+        'email' => $validatedData['email'],
+        'role_id' => $validatedData['role_id'],
+        'asal_sekolah' => $validatedData['asal_sekolah'],
+        'tanggal_lahir' => $validatedData['tanggal_lahir'],
+        'nomor_telepon' => $validatedData['nomor_telepon'],
+        'nama_ayah' => $validatedData['nama_ayah'],
+        'nama_ibu' => $validatedData['nama_ibu'],
+        'nomor_telepon_ortu' => $validatedData['nomor_telepon_ortu'],
+    ]);
 
+    // Kembalikan respons JSON dengan pesan sukses
     return response()->json(['message' => 'User berhasil diperbarui']);
-    }
+}
+
 
     /**
      * Remove the user from storage.
@@ -107,7 +128,7 @@ try {
 public function exportPDF()
     {
         $users = User::select(
-            'id', 'nama', 'email', 'tanggal_lahir', 'jenis_kelamin',
+            'id', 'name', 'email', 'tanggal_lahir', 'jenis_kelamin',
             'asal_sekolah', 'nama_ayah', 'nama_ibu', 'nomor_telepon',
             'nomor_telepon_ortu'
         )->get();
