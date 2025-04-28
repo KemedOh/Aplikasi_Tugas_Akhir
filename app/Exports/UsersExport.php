@@ -13,7 +13,7 @@ class UsersExport implements FromCollection, WithHeadings
     */
     public function collection()
     {
-        return User::with('role')->select(
+        return User::with('z')->select(
             'name',
             'email',
             'tanggal_lahir',
@@ -23,7 +23,7 @@ class UsersExport implements FromCollection, WithHeadings
             'nama_ibu',
             'nomor_telepon',
             'nomor_telepon_ortu',
-            'role_id'
+            'z_id'
         )->get()->map(function ($user) {
             return [
                 'Nama' => $user->name,
@@ -35,7 +35,7 @@ class UsersExport implements FromCollection, WithHeadings
                 'Nama Ibu' => $user->nama_ibu ?? '-',
                 'No. Telepon' => $user->nomor_telepon ?? '-',
                 'No. Telepon Orang Tua' => $user->nomor_telepon_ortu ?? '-',
-                'Role' => $user->role->role_name ?? '-',
+                'z' => $user->z->z_name ?? '-',
             ];
         });
     }

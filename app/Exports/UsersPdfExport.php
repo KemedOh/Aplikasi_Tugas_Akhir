@@ -10,7 +10,7 @@ class UsersPdfExport
 {
     public function download()
     {
-        $users = User::with('role')->select(
+        $users = User::with('zz')->select(
             'name',
             'email',
             'tanggal_lahir',
@@ -20,7 +20,7 @@ class UsersPdfExport
             'nama_ibu',
             'nomor_telepon',
             'nomor_telepon_ortu',
-            'role_id'
+            'zz_id'
         )->get()->map(function ($user) {
             return [
                 'name' => $user->name,
@@ -32,7 +32,7 @@ class UsersPdfExport
                 'nama_ibu' => $user->nama_ibu ?? '-',
                 'nomor_telepon' => $user->nomor_telepon ?? '-',
                 'nomor_telepon_ortu' => $user->nomor_telepon_ortu ?? '-',
-                'role' => $user->role->role_name ?? '-',
+                'zz' => $user->zz->zz_name ?? '-',
             ];
         });
 
