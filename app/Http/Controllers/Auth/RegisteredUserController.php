@@ -20,8 +20,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
 {
-    $Roles = Role::all(); // Ambil semua Role dari database
-    return view('auth.register', compact('Roles'));
+    $roles = role::all(); // Ambil semua role dari database
+    return view('auth.register', compact('roles'));
 }
 
     /**
@@ -31,18 +31,18 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validatedData['Role_id'] = (int) $request->Role_id;
+        $validatedData['role_id'] = (int) $request->role_id;
         // Validasi Umum
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'Role_id' => ['required', 'exists:Roles,id'],
+            'role_id' => ['required', 'exists:roles,id'],
         ];
 
         // Validasi Tambahan untuk Mahasiswa
-        $RoleMahasiswa = Role::where('Role', 'mahasiswa')->first();
-        if ($request->Role_id == $RoleMahasiswa->id) {
+        $roleMahasiswa = role::where('role', 'mahasiswa')->first();
+        if ($request->role_id == $roleMahasiswa->id) {
             $rules['tanggal_lahir'] = ['required', 'date'];
             $rules['jenis_kelamin'] = ['required', 'in:L,P'];
             $rules['asal_sekolah'] = ['required', 'string', 'max:150'];
@@ -59,14 +59,14 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'Role_id' => (int) $request->Role_id,
-            'tanggal_lahir' => $request->Role_id == $RoleMahasiswa->id ? $request->tanggal_lahir : null,
-            'jenis_kelamin' => $request->Role_id == $RoleMahasiswa->id ? $request->jenis_kelamin : null,
-            'asal_sekolah' => $request->Role_id == $RoleMahasiswa->id ? $request->asal_sekolah : null,
-            'nama_ayah' => $request->Role_id == $RoleMahasiswa->id ? $request->nama_ayah : null,
-            'nama_ibu' => $request->Role_id == $RoleMahasiswa->id ? $request->nama_ibu : null,
-            'nomor_telepon' => $request->Role_id == $RoleMahasiswa->id ? $request->nomor_telepon : null,
-            'nomor_telepon_ortu' => $request->Role_id == $RoleMahasiswa->id ? $request->nomor_telepon_ortu : null,
+            'role_id' => (int) $request->role_id,
+            'tanggal_lahir' => $request->role_id == $roleMahasiswa->id ? $request->tanggal_lahir : null,
+            'jenis_kelamin' => $request->role_id == $roleMahasiswa->id ? $request->jenis_kelamin : null,
+            'asal_sekolah' => $request->role_id == $roleMahasiswa->id ? $request->asal_sekolah : null,
+            'nama_ayah' => $request->role_id == $roleMahasiswa->id ? $request->nama_ayah : null,
+            'nama_ibu' => $request->role_id == $roleMahasiswa->id ? $request->nama_ibu : null,
+            'nomor_telepon' => $request->role_id == $roleMahasiswa->id ? $request->nomor_telepon : null,
+            'nomor_telepon_ortu' => $request->role_id == $roleMahasiswa->id ? $request->nomor_telepon_ortu : null,
         ]);
 
         event(new Registered($user));
