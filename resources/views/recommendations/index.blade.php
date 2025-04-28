@@ -9,55 +9,63 @@
         <h1 class="text-3xl font-bold text-center mb-8">Hasil Rekomendasi Jurusan</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @if(empty($results))
-                <p class="text-center text-gray-500">Belum ada hasil rekomendasi yang tersedia.</p>
-            @else
-                    @foreach($results as $result)
-                            @php
-                                $level = $result['level'];
-                                $colorClasses = match ($level) {
-                                    'sangat' => 'border-green-500 bg-green-50 hover:bg-green-100',
-                                    'cukup' => 'border-yellow-500 bg-yellow-50 hover:bg-yellow-100',
-                                    'kurang' => 'border-orange-500 bg-orange-50 hover:bg-orange-100',
-                                    'tidak' => 'border-red-500 bg-red-50 hover:bg-red-100',
-                                    default => 'border-gray-300 bg-white hover:bg-gray-100'
-                                };
+            @forelse($results as $result)
+                        @php
+                            $level = $result['level'];
+                            $major = $result['major'];
 
-                                $levelText = match ($level) {
-                                    'sangat' => 'Sangat Direkomendasikan',
-                                    'cukup' => 'Cukup Direkomendasikan',
-                                    'kurang' => 'Kurang Direkomendasikan',
-                                    'tidak' => 'Tidak Direkomendasikan',
-                                    default => 'Tidak Diketahui'
-                                };
-                            @endphp
+                            $colorClasses = match ($level) {
+                                'sangat' => 'border-green-500 bg-green-50 hover:bg-green-100',
+                                'cukup' => 'border-yellow-500 bg-yellow-50 hover:bg-yellow-100',
+                                'kurang' => 'border-orange-500 bg-orange-50 hover:bg-orange-100',
+                                'tidak' => 'border-red-500 bg-red-50 hover:bg-red-100',
+                                default => 'border-gray-300 bg-white hover:bg-gray-100'
+                            };
 
-                            <a href="{{ route('questions.index', ['category' => 'spesifik', 'major_id' => $result['major']->id]) }}"
-                                class="alert-button block p-6 rounded-xl shadow-lg border-2 transition hover:scale-105 {{ $colorClasses }}"
-                                data-level="{{ $level }}">
-                                <h2 class="text-2xl font-semibold mb-2">
-                                    {{ $result['major']->name }}
-                                </h2>
-                                <p class="text-lg text-gray-700">
-                                    {{ $levelText }}
-                                </p>
-                            </a>
-                    @endforeach
-            @endif
+                            $levelText = match ($level) {
+                                'sangat' => 'Sangat Direkomendasikan',
+                                'cukup' => 'Cukup Direkomendasikan',
+                                'kurang' => 'Kurang Direkomendasikan',
+                                'tidak' => 'Tidak Direkomendasikan',
+                                default => 'Tidak Diketahui'
+                            };
+                        @endphp
+
+                        <a href="{{ route('questions.index', ['category' => 'spesifik', 'major_id' => $major->id]) }}"
+                            class="alert-button block p-6 rounded-xl shadow-lg border-2 transition hover:scale-105 {{ $colorClasses }}"
+                            data-level="{{ $level }}">
+                            <h2 class="text-2xl font-semibold mb-2">
+                                {{ $major->name }}
+                            </h2>
+                            <p class="text-lg text-gray-700">
+                                {{ $levelText }}
+                            </p>
+                        </a>
+            @empty
+                <p class="text-center text-gray-500 col-span-full">Belum ada hasil rekomendasi yang tersedia.</p>
+            @endforelse
         </div>
 
         {{-- Cek jika user sudah menjawab jurusan rekomendasi yang sangat dan cukup --}}
         @php
-            $resultsCollection = collect($results); // Mengonversi array menjadi koleksi
+            $resultsCollection = collect($results);
         @endphp
 
-        @if($resultsCollection->where('level', 'sangat')->isNotEmpty() && $resultsCollection->where('level', 'cukup')->isNotEmpty())
-            <a href="{{ route('recommendations.final') }}"
-                class="bg-green-600 text-white px-4 py-2 mt-6 inline-block rounded-lg hover:bg-green-700">
-                Lihat Hasil Akhir
-            </a>
+        @if(
+            $resultsCollection->where('level', 'sangat')->isNotEmpty() &&
+            $resultsCollection->where('level', 'cukup')->isNotEmpty() &&
+            $answeredSpecialCount >= 2
+        )
+                    <a href="{{ route('recommendations.final') }}"
+                        class="bg-green-600 text-white px-4 py-2 mt-6 inline-block rounded-lg hover:bg-green-700">
+                        Lihat Hasil Akhir
+                    </a>
         @else
-            <p class="text-gray-600 mt-4">Silakan jawab jurusan rekomendasi lainnya terlebih dahulu.</p>
+            <div class="mt-6 px-4 py-3 border-l-4 border-yellow-500 bg-yellow-50 text-yellow-800 rounded shadow">
+                <strong>Perhatian:</strong> Silakan jawab soal spesifik untuk jurusan yang <span
+                    class="font-semibold">sangat</span>
+                dan <span class="font-semibold">cukup</span> direkomendasikan terlebih dahulu sebelum melihat hasil akhir.
+            </div>
         @endif
     </div>
 
@@ -86,7 +94,6 @@
                             cancelButtonText: 'Batal'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // Lanjutkan redirect manual
                                 window.location.href = button.getAttribute('href');
                             }
                         });

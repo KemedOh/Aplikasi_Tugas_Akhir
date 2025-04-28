@@ -16,7 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('major_id')->constrained()->onDelete('cascade');
             $table->enum('level', ['sangat_direkomendasikan', 'cukup_direkomendasikan']);
+            $table->integer('score')->nullable();
             $table->timestamps();
+
+            $table->unique(['user_id', 'major_id']);
+
         });
     }
 

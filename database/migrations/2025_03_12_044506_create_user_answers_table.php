@@ -15,6 +15,8 @@ public function up()
         $table->foreignId('question_id')->constrained()->onDelete('cascade');
         $table->unsignedInteger('value')->nullable(); // untuk boolean
         $table->foreignId('option_id')->nullable()->constrained('question_options')->onDelete('cascade'); // untuk pilihan ganda
+        $table->unsignedBigInteger('major_id')->nullable()->after('user_id');
+        $table->foreign('major_id')->references('id')->on('majors')->onDelete('cascade');
         $table->timestamps();
     });
 }

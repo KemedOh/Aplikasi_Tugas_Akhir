@@ -7,79 +7,117 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserAnswer;
 use App\Models\Major;
+use App\Models\Question;
+use App\Models\Recommendation;
+use Illuminate\Support\Facades\Log;
 
 class RecommendationController extends Controller
 {
-    public function show()
-    {
-        $userId = Auth::id();
+public function show()
+{
+    $userId = Auth::id();
 
-        // Dapatkan semua jawaban user
-        $answers = UserAnswer::where('user_id', $userId)
-            ->with(['question', 'option']) // ← penting agar relasi terbaca
-            ->get();
+    // Ambil semua jawaban user
+    $answers = UserAnswer::where('user_id', $userId)
+        ->with(['question', 'option'])
+        ->get();
 
-        // Hitung skor per jurusan
-        $scores = [];
+    $scores = [];
+    $hasGeneralAnswers = false;
 
-        foreach ($answers as $answer) {
-            if ($answer->question && $answer->question->major_id) {
-                $majorId = $answer->question->major_id;
-
-                // boolean
-                if ($answer->value == 1) {
-                    $scores[$majorId] = ($scores[$majorId] ?? 0) + 1;
-                }
-
-                // pilihan ganda dengan jawaban benar
-                if (!is_null($answer->option) && $answer->option->is_correct) {
-                    $scores[$majorId] = ($scores[$majorId] ?? 0) + 2;
-                }
-            }
+    foreach ($answers as $answer) {
+        if ($answer->question && $answer->question->category === 'umum') {
+            $hasGeneralAnswers = true;
         }
 
-        // Urutkan dari skor tertinggi
-        arsort($scores);
-        $topMajors = array_slice($scores, 0, 2, true);
+        if ($answer->question && $answer->question->major_id) {
+            $majorId = $answer->question->major_id;
 
-        $results = [];
-        $levelPriority = ['sangat' => 1, 'cukup' => 2, 'kurang' => 3, 'tidak' => 4];
-
-        foreach (Major::all() as $major) {
-            $score = $scores[$major->id] ?? 0;
-
-            if ($score >= 5) {
-                $level = 'sangat';
-            } elseif ($score >= 3) {
-                $level = 'cukup';
-            } elseif ($score >= 1) {
-                $level = 'kurang';
-            } else {
-                $level = 'tidak';
+            if ($answer->value == 1) {
+                $scores[$majorId] = ($scores[$majorId] ?? 0) + 1;
             }
 
-            $results[] = [
-                'major' => $major,
-                'level' => $level,
-            ];
+            if (!is_null($answer->option) && $answer->option->is_correct) {
+                $scores[$majorId] = ($scores[$majorId] ?? 0) + 2;
+            }
         }
-
-        // Urutkan berdasarkan prioritas level
-        usort($results, function ($a, $b) use ($levelPriority) {
-            return $levelPriority[$a['level']] <=> $levelPriority[$b['level']];
-        });
-
-        return view('recommendations.index', compact('results'));
     }
+
+    $levelPriority = ['sangat' => 1, 'cukup' => 2, 'kurang' => 3, 'tidak' => 4];
+    $tempResults = [];
+
+    foreach (Major::all() as $major) {
+        $score = $scores[$major->id] ?? 0;
+
+        if ($score >= 5) {
+            $level = 'sangat';
+        } elseif ($score >= 3) {
+            $level = 'cukup';
+        } elseif ($score >= 1) {
+            $level = 'kurang';
+        } else {
+            $level = 'tidak';
+        }
+
+        $tempResults[] = [
+            'major' => $major,
+            'level' => $level,
+        ];
+    }
+
+    // DEBUGGING: Periksa isi $tempResults sebelum diurutkan
+    Log::debug('Temp Results Before Sorting: ', $tempResults);
+
+    // Urutkan berdasarkan prioritas level
+    usort($tempResults, function ($a, $b) use ($levelPriority) {
+        return $levelPriority[$a['level']] <=> $levelPriority[$b['level']];
+    });
+
+    // DEBUGGING: Periksa isi $tempResults setelah diurutkan
+    Log::debug('Temp Results After Sorting: ', $tempResults);
+
+    // Langsung ambil semua hasil
+    $results = collect($tempResults);
+
+    // DEBUGGING: Periksa hasil akhir di $results
+    Log::debug('Final Results: ', $results->toArray());
+
+    // Cek berapa jurusan sangat dan cukup yang sudah dijawab soal spesifiknya
+    $recommendedMajors = $results->whereIn('level', ['sangat', 'cukup'])->pluck('major.id');
+
+    $answeredSpecialCount = UserAnswer::where('user_id', $userId)
+        ->whereHas('question', function ($query) use ($recommendedMajors) {
+            $query->whereIn('major_id', $recommendedMajors)
+                  ->where('category', 'spesifik');
+        })
+        ->select('question_id')
+        ->distinct()
+        ->pluck('question.major_id')
+        ->unique()
+        ->count();
+
+    $hasSpecificAnswers = UserAnswer::where('user_id', $userId)
+        ->whereHas('question', function ($query) {
+            $query->where('category', 'spesifik');
+        })
+        ->exists();
+
+    return view('recommendations.index', [
+        'results' => $results,
+        'answeredSpecialQuestions' => $answeredSpecialCount >= 2,
+        'answeredSpecialCount' => $answeredSpecialCount,
+        'hasGeneralAnswers' => $hasGeneralAnswers,
+        'hasSpecificAnswers' => $hasSpecificAnswers,
+    ]);
+}
+
 
     public function intermediateResult(Request $request, $majorId)
     {
         $userId = Auth::id();
 
-        // Ambil jurusan yang sedang dipilih
         $major = Major::findOrFail($majorId);
 
-        // Ambil semua jawaban spesifik dari user untuk jurusan ini
         $answers = UserAnswer::where('user_id', $userId)
             ->whereHas('question', fn($q) => 
                 $q->where('category', 'spesifik')->where('major_id', $majorId)
@@ -87,7 +125,6 @@ class RecommendationController extends Controller
             ->with('option')
             ->get();
 
-        // Hitung skor soal spesifik jurusan ini
         $score = 0;
         foreach ($answers as $answer) {
             if ($answer->option && $answer->option->is_correct) {
@@ -95,13 +132,13 @@ class RecommendationController extends Controller
             }
         }
 
-        // ✅ Update skor ke tabel temporary_recommendations
+        $level = $this->determineLevel($score);
+
         TemporaryRecommendation::updateOrCreate(
             ['user_id' => $userId, 'major_id' => $majorId],
-            ['score' => $score]
+            ['score' => $score, 'level' => $level]
         );
 
-        // Ambil jurusan rekomendasi lainnya
         $otherMajors = TemporaryRecommendation::where('user_id', $userId)
             ->where('major_id', '!=', $majorId)
             ->with('major')
@@ -110,59 +147,92 @@ class RecommendationController extends Controller
         return view('recommendations.intermediate', compact('major', 'score', 'otherMajors'));
     }
 
-    public function finalResult(Request $request)
+public function finalResult(Request $request)
+{
+    $userId = Auth::id();
+
+    // Ambil semua jawaban dari form
+    $answers = $request->input('answers', []);
+    $majorId = $request->input('major_id');
+
+    // Simpan ke tabel user_answers
+    foreach ($answers as $questionId => $answer) {
+    $question = Question::find($questionId); // 🔥 ambil data pertanyaan dari database
+
+    UserAnswer::updateOrCreate(
+        [
+            'user_id' => $userId,
+            'question_id' => $questionId,
+        ],
+        [
+            'major_id' => $question->major_id ?? null,
+            'option_id' => $answer['option_id'] ?? null,
+            'value' => $answer['value'] ?? null,
+        ]
+    );
+}
+
+
+    // Ambil semua jawaban user dari database, terutama yang terkait dengan kategori 'spesifik'
+    $userAnswers = UserAnswer::where('user_id', $userId)
+        ->whereHas('question', fn($q) => $q->where('category', 'spesifik'))
+        ->with(['question', 'option'])
+        ->get();
+
+    // Hitung skor tiap jurusan
+    $scores = [];
+    foreach ($userAnswers as $answer) {
+        $majorId = $answer->question->major_id;
+
+        if ($answer->option && $answer->option->is_correct) {
+            $scores[$majorId] = ($scores[$majorId] ?? 0) + 1;
+        }
+    }
+
+    // Bersihkan rekomendasi lama (jika ada)
+    Recommendation::where('user_id', $userId)->delete();
+
+    // Simpan hasil baru hanya berdasarkan soal khusus
+    arsort($scores);
+    $i = 0;
+    foreach ($scores as $majorId => $score) {
+        Recommendation::create([
+            'user_id' => $userId,
+            'major_id' => $majorId,
+            'score' => $score,
+            'level' => $i === 0 ? 'sangat_direkomendasikan' : 'cukup_direkomendasikan',
+        ]);
+        $i++;
+        if ($i >= 2) break;
+    }
+
+    // Ambil kembali jurusan tertinggi untuk ditampilkan
+    $topMajorId = array_key_first($scores);
+    $topMajor = Major::find($topMajorId);
+    $topScore = $scores[$topMajorId] ?? 0;
+
+    // Cek apakah user sudah menjawab semua soal spesifik
+    $totalQuestions = Question::where('category', 'spesifik')->count();
+    $answeredQuestions = $userAnswers->count();
+
+    // Jika jumlah jawaban sama dengan jumlah soal, maka user sudah selesai
+    $allAnswered = $totalQuestions === $answeredQuestions;
+
+    return view('recommendations.final', compact('topMajor', 'topScore', 'allAnswered'));
+}
+
+
+
+    private function determineLevel($score)
     {
-        $userId = Auth::id();
-
-        // Ambil semua jurusan yang sangat & cukup direkomendasikan dari temporary_recommendations
-        $recommendedMajors = TemporaryRecommendation::where('user_id', $userId)
-            ->whereIn('level', ['sangat', 'cukup']) // Pastikan kolom 'level' ada
-            ->pluck('major_id');
-
-        // Ambil jurusan yang sudah dijawab oleh user dari kategori 'spesifik'
-        $answeredMajorIds = UserAnswer::where('user_id', $userId)
-            ->whereHas('question', fn($q) => $q->where('category', 'spesifik'))
-            ->pluck('question.major_id')
-            ->unique();
-
-        // Cek apakah semua jurusan utama sudah dijawab
-        $isComplete = $recommendedMajors->diff($answeredMajorIds)->isEmpty();
-
-        if (!$isComplete) {
-            return redirect()->route('dashboard')->with('error', 'Silakan selesaikan dulu soal khusus dari jurusan yang sangat dan cukup direkomendasikan.');
+        if ($score >= 5) {
+            return 'sangat';
+        } elseif ($score >= 3) {
+            return 'cukup';
+        } elseif ($score >= 1) {
+            return 'kurang';
+        } else {
+            return 'tidak';
         }
-
-        // Hitung skor akhir
-        $userAnswers = UserAnswer::where('user_id', $userId)
-            ->whereHas('question', fn($q) => $q->where('category', 'spesifik'))
-            ->with('question.option')
-            ->get();
-
-        $scores = [];
-        foreach ($userAnswers as $answer) {
-            $majorId = $answer->question->major_id;
-
-            if ($answer->option && $answer->option->is_correct) {
-                $scores[$majorId] = ($scores[$majorId] ?? 0) + 1;
-            }
-        }
-
-        if (empty($scores)) {
-            return view('recommendations.final', [
-                'topMajor' => null,
-                'topScore' => 0
-            ]);
-        }
-
-        // Ambil skor tertinggi (tanpa prioritas)
-        $maxScore = max($scores);
-        $topMajorIds = array_keys($scores, $maxScore);
-        sort($topMajorIds);
-        $topMajorId = $topMajorIds[0];
-
-        $topMajor = Major::findOrFail($topMajorId);
-        $topScore = $scores[$topMajorId];
-
-        return view('recommendations.final', compact('topMajor', 'topScore'));
     }
 }

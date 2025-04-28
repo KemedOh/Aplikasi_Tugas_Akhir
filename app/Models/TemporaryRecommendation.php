@@ -9,7 +9,7 @@ class TemporaryRecommendation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'major_id', 'level'];
+    protected $fillable = ['user_id', 'major_id', 'level','score'];
 
     public function user()
     {

@@ -9,7 +9,7 @@ class Recommendation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'major_id', 'level'];
+    protected $fillable = ['user_id', 'major_id','score', 'level'];
 
     public function user()
     {

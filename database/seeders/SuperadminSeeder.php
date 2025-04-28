@@ -2,33 +2,35 @@
 
 namespace Database\Seeders;
 
-use App\Models\role;
+use App\Models\User;
+use App\Models\Role; // pastikan kamu punya model Role
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Models\User;
 
 class SuperadminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        // Cek jika superadmin sudah ada
-        if (role::where('role', 'superadmin')->exists()) {
-            return; // Superadmin sudah ada, tidak perlu menambah lagi
+        // Cari role superadmin dari tabel roles
+        $role = Role::where('role', 'superadmin')->first();
+
+        // Jika role tidak ditemukan, bisa buat terlebih dahulu
+        if (!$role) {
+            $role = Role::create(['role' => 'superadmin']);
         }
 
-        // Menambahkan superadmin baru
+        // Cek jika user superadmin sudah ada
+        if (User::where('email', 'superadmin@plb.ac.id')->exists()) {
+            return;
+        }
+
+        // Buat superadmin baru
         User::create([
             'name' => 'Superadmin',
             'email' => 'superadmin@plb.ac.id',
             'password' => Hash::make('superadminlp3ijuruai'),
-            'role' => 'superadmin',
+            'role_id' => $role->id,
             'remember_token' => Str::random(10),
         ]);
     }
