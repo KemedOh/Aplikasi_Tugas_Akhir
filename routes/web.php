@@ -59,8 +59,8 @@ Route::get('/answers/{major}/detail', [UserAnswerController::class, 'detail'])
     ->name('answers.detail'); 
 Route::get('/questions/special/{majorId}', [QuestionController::class, 'specialQuestions'])->name('questions.nextSpecialQuestion');
 
-Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin,superadmin'])->group(function () {
-    Route::get('/recommendations/users-result', [RecommendationController::class, 'usersResult'])->name('recommendations.users-result');
+Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class . ':admin,superadmin'])->group(function () {
+    Route::get('/recommendations/users-result', [RecommendationController::class, 'adminResults'])->name('recommendations.users-result');
     Route::get('/recommendations/export', [RecommendationController::class, 'export'])->name('recommendations.export');
 });
 

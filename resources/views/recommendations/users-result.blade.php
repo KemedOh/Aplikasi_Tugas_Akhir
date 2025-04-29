@@ -32,17 +32,20 @@
                             </thead>
                             <tbody>
                                 @foreach($users as $index => $user)
-                                    <tr class="hover:bg-gray-100">
-                                        <td class="border-b px-4 py-2">{{ $index + 1 }}</td>
-                                        <td class="border-b px-4 py-2">{{ $user->name }}</td>
-                                        <td class="border-b px-4 py-2">{{ $user->email }}</td>
-                                        <td class="border-b px-4 py-2">
-                                            {{ $user->recommendations->where('level', 'sangat')->first()?->major?->name ?? '-' }}
-                                        </td>
-                                        <td class="border-b px-4 py-2">
-                                            {{ $user->recommendations->where('level', 'cukup')->first()?->major?->name ?? '-' }}
-                                        </td>
-                                    </tr>
+                                    {{-- @dd($user->recommendations->pluck('level', 'major_id')) --}}
+
+
+                                                                <tr class="hover:bg-gray-100">
+                                                                    <td class="border-b px-4 py-2">{{ $index + 1 }}</td>
+                                                                    <td class="border-b px-4 py-2">{{ $user->name }}</td>
+                                                                    <td class="border-b px-4 py-2">{{ $user->email }}</td>
+                                                                    <td class="border-b px-4 py-2">
+                                                                        {{ $user->recommendations->where('level', 'sangat_direkomendasikan')->first()?->major?->name ?? '-' }}
+                                                                    </td>
+                                                                    <td class="border-b px-4 py-2">
+                                                                        {{ $user->recommendations->where('level', 'cukup_direkomendasikan')->first()?->major?->name ?? '-' }}
+                                                                    </td>
+                                                                </tr>
                                 @endforeach
                             </tbody>
                         </table>

@@ -16,9 +16,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RecommendationController extends Controller
 {
-    public function usersResult()
+public function adminResults()
 {
-    $users = User::with('recommendations.major')->get(); // Pastikan relasi sudah dibuat
+    // Ambil semua user yang memiliki rekomendasi (final)
+    $users = User::with(['recommendations.major'])
+        ->whereHas('recommendations') // hanya user yang memiliki rekomendasi
+        ->get();
+
     return view('recommendations.users-result', compact('users'));
 }
 public function export()

@@ -11,13 +11,14 @@ class Recommendation extends Model
 
     protected $fillable = ['user_id', 'major_id','score', 'level'];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+   public function major()
+{
+    return $this->belongsTo(Major::class);
+}
 
-    public function major()
-    {
-        return $this->belongsTo(Major::class);
-    }
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }
