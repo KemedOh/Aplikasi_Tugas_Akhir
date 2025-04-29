@@ -26,6 +26,7 @@
                                     <th class="border-b px-4 py-2">No</th>
                                     <th class="border-b px-4 py-2">Nama</th>
                                     <th class="border-b px-4 py-2">Email</th>
+                                    <th class="border-b px-4 py-2">No. HP</th>
                                     <th class="border-b px-4 py-2">Sangat Direkomendasikan</th>
                                     <th class="border-b px-4 py-2">Cukup Direkomendasikan</th>
                                 </tr>
@@ -39,6 +40,7 @@
                                                                     <td class="border-b px-4 py-2">{{ $index + 1 }}</td>
                                                                     <td class="border-b px-4 py-2">{{ $user->name }}</td>
                                                                     <td class="border-b px-4 py-2">{{ $user->email }}</td>
+                                                                    <td class="border-b px-4 py-2">{{ $user->nomor_telepon ?? '-' }}</td>
                                                                     <td class="border-b px-4 py-2">
                                                                         {{ $user->recommendations->where('level', 'sangat_direkomendasikan')->first()?->major?->name ?? '-' }}
                                                                     </td>
