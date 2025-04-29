@@ -23,7 +23,13 @@
                         </x-nav-link>
                     </div>
                 @endif
-
+                @if(Auth::user()->role->role !== 'mahasiswa')
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('recommendations.users-result')" :active="request()->routeIs('usersResult')">
+                            {{ __('Daftar Rekomendasi Jurusan') }}
+                        </x-nav-link>
+                    </div>
+                @endif
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('user.guide')" :active="request()->routeIs('user.guide')">
                             {{ __('Panduan') }}
@@ -93,6 +99,11 @@
             </x-responsive-nav-link>
         </div>
         @endif
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('recommendations.users-result')" :active="request()->routeIs('usersResult')">
+                {{ __('Daftar Rekomendasi Jurusan') }}
+            </x-responsive-nav-link>
+        </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('user.guide')" :active="request()->routeIs('user.guide')">
                 {{ __('Panduan') }}

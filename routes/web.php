@@ -9,6 +9,8 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\UserAnswerController;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\DashboardController;
+use App\Http\Middleware\RoleMiddleware;
+use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
     return View('auth.login');
@@ -36,10 +38,13 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/pertanyaan', [QuestionController::class, 'submitAll'])->name('questions.submitAll');
 
 
-Route::resource('users', UserController::class);
-Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
-Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf');
-Route::post('/update-user', [UserController::class, 'update'])->name('update.user');
+Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin,superadmin'])->group(function () {
+    Route::resource('users', UserController::class);
+    Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
+    Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf');
+    Route::post('/update-user', [UserController::class, 'update'])->name('update.user');
+});
+
 
 
 Route::resource('majors', MajorController::class);
@@ -53,6 +58,11 @@ Route::get('/answers/{major}/detail', [UserAnswerController::class, 'detail'])
     ->middleware(['auth'])
     ->name('answers.detail'); 
 Route::get('/questions/special/{majorId}', [QuestionController::class, 'specialQuestions'])->name('questions.nextSpecialQuestion');
+
+Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin,superadmin'])->group(function () {
+    Route::get('/recommendations/users-result', [RecommendationController::class, 'usersResult'])->name('recommendations.users-result');
+    Route::get('/recommendations/export', [RecommendationController::class, 'export'])->name('recommendations.export');
+});
 
 
 

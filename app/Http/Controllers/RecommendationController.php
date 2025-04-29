@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RecommendationsExport;
 use App\Models\TemporaryRecommendation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,10 +10,22 @@ use App\Models\UserAnswer;
 use App\Models\Major;
 use App\Models\Question;
 use App\Models\Recommendation;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RecommendationController extends Controller
 {
+    public function usersResult()
+{
+    $users = User::with('recommendations.major')->get(); // Pastikan relasi sudah dibuat
+    return view('recommendations.users-result', compact('users'));
+}
+public function export()
+{
+    return Excel::download(new RecommendationsExport, 'hasil_rekomendasi_user.xlsx');
+}
+
 public function show()
 {
     $userId = Auth::id();

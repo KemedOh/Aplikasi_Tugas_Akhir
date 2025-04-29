@@ -77,5 +77,9 @@ class User extends Authenticatable
     {
     return $this->hasMany(UserAnswer::class);
     }
+    public function recommendations()
+{
+    return $this->hasMany(Recommendation::class); // Menyesuaikan dengan nama model Recommendation
+}
 
 }
