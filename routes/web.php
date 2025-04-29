@@ -62,6 +62,9 @@ Route::get('/questions/special/{majorId}', [QuestionController::class, 'specialQ
 Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class . ':admin,superadmin'])->group(function () {
     Route::get('/recommendations/users-result', [RecommendationController::class, 'adminResults'])->name('recommendations.users-result');
     Route::get('/recommendations/export', [RecommendationController::class, 'export'])->name('recommendations.export');
+    Route::get('recommendations/export', [RecommendationController::class, 'showExportForm'])->name('recommendations.showExportForm');
+    Route::get('recommendations/export/all', [RecommendationController::class, 'exportAll'])->name('recommendations.exportAll');
+    Route::get('recommendations/export/filtered', [RecommendationController::class, 'exportFiltered'])->name('recommendations.exportFiltered');
 });
 
 

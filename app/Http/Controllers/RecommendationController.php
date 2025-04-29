@@ -16,6 +16,31 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RecommendationController extends Controller
 {
+    // Tampilkan Form Export
+    public function showExportForm()
+    {
+        // Ambil data jurusan untuk dropdown
+        $majors = Major::all();
+
+        return view('recommendations.export', compact('majors'));
+    }
+
+    // Export Semua Data
+    public function exportAll(Request $request)
+    {
+        // Export semua data tanpa filter
+        return Excel::download(new RecommendationsExport(), 'semua_rekomendasi_user.xlsx');
+    }
+
+    // Export Data dengan Filter Jurusan
+    public function exportFiltered(Request $request)
+    {
+        // Mendapatkan major_id yang dipilih dari filter
+        $majorId = $request->input('major_id');
+
+        // Export data berdasarkan jurusan yang dipilih
+        return Excel::download(new RecommendationsExport($majorId), 'rekomendasi_user_filtered.xlsx');
+    }
 public function adminResults()
 {
     // Ambil semua user yang memiliki rekomendasi (final)
@@ -23,7 +48,8 @@ public function adminResults()
         ->whereHas('recommendations') // hanya user yang memiliki rekomendasi
         ->get();
 
-    return view('recommendations.users-result', compact('users'));
+    $majors = Major::all();
+return view('recommendations.users-result', compact('users', 'majors'));
 }
 public function export()
 {

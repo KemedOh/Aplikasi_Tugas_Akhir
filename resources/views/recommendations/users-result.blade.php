@@ -6,13 +6,33 @@
     </x-slot>
 
     <div class="container mx-auto px-4 mt-4">
-        <div class="flex justify-end mb-4">
-            <a href="{{ route('recommendations.export') }}"
-                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Export ke Excel
-            </a>
-        </div>
+    <!-- Bagian Tombol Export -->
+    <div class="flex gap-4 mb-4 items-end">
+        <!-- Form Filter Berdasarkan Jurusan -->
+        <form action="{{ route('recommendations.exportFiltered') }}" method="GET" class="flex gap-4 items-center">
+            <div>
+                <label for="major_id" class="mr-2 font-medium text-white">Pilih Jurusan:</label>
+                <select name="major_id" id="major_id" class="border rounded px-2 py-1">
+                    <option value="">Pilih Jurusan</option>
+                    @foreach ($majors as $major)
+                        <option value="{{ $major->id }}">{{ $major->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Export Berdasarkan Jurusan
+            </button>
+        </form>
+    
+        <!-- Tombol Export Semua -->
+        <a href="{{ route('recommendations.exportAll') }}"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            Export Semua Data
+        </a>
+    </div>
 
+
+        <!-- Tabel Rekomendasi -->
         <div class="flex justify-center">
             <div class="w-full md:w-10/12">
                 <div class="bg-white shadow-md rounded-lg overflow-hidden">
@@ -33,21 +53,18 @@
                             </thead>
                             <tbody>
                                 @foreach($users as $index => $user)
-                                    {{-- @dd($user->recommendations->pluck('level', 'major_id')) --}}
-
-
-                                                                <tr class="hover:bg-gray-100">
-                                                                    <td class="border-b px-4 py-2">{{ $index + 1 }}</td>
-                                                                    <td class="border-b px-4 py-2">{{ $user->name }}</td>
-                                                                    <td class="border-b px-4 py-2">{{ $user->email }}</td>
-                                                                    <td class="border-b px-4 py-2">{{ $user->nomor_telepon ?? '-' }}</td>
-                                                                    <td class="border-b px-4 py-2">
-                                                                        {{ $user->recommendations->where('level', 'sangat_direkomendasikan')->first()?->major?->name ?? '-' }}
-                                                                    </td>
-                                                                    <td class="border-b px-4 py-2">
-                                                                        {{ $user->recommendations->where('level', 'cukup_direkomendasikan')->first()?->major?->name ?? '-' }}
-                                                                    </td>
-                                                                </tr>
+                                    <tr class="hover:bg-gray-100">
+                                        <td class="border-b px-4 py-2">{{ $index + 1 }}</td>
+                                        <td class="border-b px-4 py-2">{{ $user->name }}</td>
+                                        <td class="border-b px-4 py-2">{{ $user->email }}</td>
+                                        <td class="border-b px-4 py-2">{{ $user->nomor_telepon ?? '-' }}</td>
+                                        <td class="border-b px-4 py-2">
+                                            {{ $user->recommendations->where('level', 'sangat_direkomendasikan')->first()?->major?->name ?? '-' }}
+                                        </td>
+                                        <td class="border-b px-4 py-2">
+                                            {{ $user->recommendations->where('level', 'cukup_direkomendasikan')->first()?->major?->name ?? '-' }}
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -61,5 +78,4 @@
             </div>
         </div>
     </div>
-
 </x-app-layout>
