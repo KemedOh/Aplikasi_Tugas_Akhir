@@ -7,29 +7,52 @@
 
     <div class="container mx-auto px-4 mt-4">
     <!-- Bagian Tombol Export -->
-    <div class="flex gap-4 mb-4 items-end">
-        <!-- Form Filter Berdasarkan Jurusan -->
-        <form action="{{ route('recommendations.exportFiltered') }}" method="GET" class="flex gap-4 items-center">
-            <div>
-                <label for="major_id" class="mr-2 font-medium text-white">Pilih Jurusan:</label>
-                <select name="major_id" id="major_id" class="border rounded px-2 py-1">
-                    <option value="">Pilih Jurusan</option>
-                    @foreach ($majors as $major)
-                        <option value="{{ $major->id }}">{{ $major->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Export Berdasarkan Jurusan
-            </button>
-        </form>
-    
-        <!-- Tombol Export Semua -->
-        <a href="{{ route('recommendations.exportAll') }}"
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            Export Semua Data
-        </a>
-    </div>
+<div class="flex flex-wrap gap-4 mb-6 items-end">
+    <!-- Form Export Excel Filtered -->
+    <form action="{{ route('recommendations.exportFiltered') }}" method="GET" class="flex items-end gap-2">
+        <div>
+            <label for="major_id" class="block text-sm font-medium text-white">Excel - Pilih Jurusan</label>
+            <select name="major_id" id="major_id" class="mt-1 border rounded px-2 py-1">
+                <option value="">Pilih Jurusan</option>
+                @foreach ($majors as $major)
+                    <option value="{{ $major->id }}">{{ $major->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="mt-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Export Excel Filtered
+        </button>
+    </form>
+
+    <!-- Tombol Export Semua ke Excel -->
+    <a href="{{ route('recommendations.exportAll') }}"
+        class="mt-auto bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        Export Semua Excel
+    </a>
+
+    <!-- Form Export PDF Filtered -->
+    <form action="{{ route('recommendations.exportPdfFiltered') }}" method="GET" class="flex items-end gap-2">
+        <div>
+            <label for="major_id_pdf" class="block text-sm font-medium text-white">PDF - Pilih Jurusan</label>
+            <select name="major_id" id="major_id_pdf" class="mt-1 border rounded px-2 py-1">
+                <option value="">Pilih Jurusan</option>
+                @foreach ($majors as $major)
+                    <option value="{{ $major->id }}">{{ $major->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="mt-auto bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Export PDF Filtered
+        </button>
+    </form>
+
+    <!-- Tombol Export Semua ke PDF -->
+    <a href="{{ route('recommendations.exportPdf') }}"
+        class="mt-auto bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
+        Export Semua PDF
+    </a>
+</div>
+
 
 
         <!-- Tabel Rekomendasi -->

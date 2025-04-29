@@ -65,6 +65,8 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class . ':admin,
     Route::get('recommendations/export', [RecommendationController::class, 'showExportForm'])->name('recommendations.showExportForm');
     Route::get('recommendations/export/all', [RecommendationController::class, 'exportAll'])->name('recommendations.exportAll');
     Route::get('recommendations/export/filtered', [RecommendationController::class, 'exportFiltered'])->name('recommendations.exportFiltered');
+    Route::get('/recommendations/export/pdf', [RecommendationController::class, 'exportPdf'])->name('recommendations.exportPdf');
+    Route::get('/recommendations/export/pdf/filtered', [RecommendationController::class, 'exportPdfFiltered'])->name('recommendations.exportPdfFiltered');
 });
 
 

@@ -11,11 +11,33 @@ use App\Models\Major;
 use App\Models\Question;
 use App\Models\Recommendation;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class RecommendationController extends Controller
 {
+    public function exportPdfFiltered(Request $request)
+{
+    $majorId = $request->input('major_id');
+
+    $users = User::with(['recommendations.major'])
+        ->whereHas('recommendations', function ($query) use ($majorId) {
+            $query->where('major_id', $majorId);
+        })->get();
+
+    return Pdf::loadView('recommendations.export-pdf', compact('users'))
+        ->setPaper('A4', 'landscape')
+        ->download('rekomendasi_user_filtered.pdf');
+}
+public function exportPdf()
+{
+    $users = User::with('recommendations.major')->get();
+
+    return Pdf::loadView('recommendations.export-pdf', compact('users'))
+        ->setPaper('A4', 'landscape')
+        ->download('rekomendasi_user.pdf');
+}
     // Tampilkan Form Export
     public function showExportForm()
     {
