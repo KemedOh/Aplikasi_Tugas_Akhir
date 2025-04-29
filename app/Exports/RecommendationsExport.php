@@ -16,8 +16,9 @@ class RecommendationsExport implements FromCollection, WithHeadings
             return [
                 'Nama' => $user->name,
                 'Email' => $user->email,
-                'Sangat Direkomendasikan' => $user->recommendations->where('level', 'sangat')->first()?->major?->nama_jurusan ?? '-',
-                'Cukup Direkomendasikan' => $user->recommendations->where('level', 'cukup')->first()?->major?->nama_jurusan ?? '-',
+                'Email' => $user->nomor_telepon,
+                'Sangat Direkomendasikan' => $user->recommendations->where('level', 'sangat_direkomendasikan')->first()?->major?->name ?? '-',
+                'Cukup Direkomendasikan' => $user->recommendations->where('level', 'cukup_direkomendasikan')->first()?->major?->name ?? '-',
             ];
         });
     }
@@ -27,6 +28,7 @@ class RecommendationsExport implements FromCollection, WithHeadings
         return [
             'Nama',
             'Email',
+            'Nomor HP',
             'Sangat Direkomendasikan',
             'Cukup Direkomendasikan',
         ];
