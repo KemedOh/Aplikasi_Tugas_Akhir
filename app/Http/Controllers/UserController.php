@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Exports\UsersPdfExport;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Role;
@@ -168,10 +169,19 @@ public function update(Request $request, $id)
                 return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage())->withInput();
             }
     }
-    public function exportExcel()
-    {
-    return Excel::download(new UsersExport, 'users.xlsx');
-    }
+public function exportExcel(Request $request)
+{
+    return Excel::download(new UsersExport(
+        $request->id,
+        $request->name,
+        $request->jenis_kelamin,
+        $request->start_date,
+        $request->end_date,
+        $request->start_number,  // Menambahkan parameter untuk rentang nomor urut mulai
+        $request->end_number     // Menambahkan parameter untuk rentang nomor urut akhir
+    ), 'users.xlsx');
+}
+
 
 public function exportPDF()
     {
@@ -186,4 +196,8 @@ public function exportPDF()
 
         return $pdf->download('users.pdf');
     }
+public function exportPdfFiltered(Request $request)
+{
+    return (new UsersPdfExport)->downloadFiltered($request);
+}
 }

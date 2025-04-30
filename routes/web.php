@@ -39,8 +39,10 @@ Route::post('/pertanyaan', [QuestionController::class, 'submitAll'])->name('ques
 
 
 Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin,superadmin'])->group(function () {
-    Route::resource('users', UserController::class);
+Route::resource('users', UserController::class)->except(['show']);
+    Route::get('/users/export-excel', [UserController::class, 'exportExcel'])->name('users.exportExcel');
     Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
+Route::get('/export-users-pdf-filtered', [UserController::class, 'exportPdfFiltered'])->name('users.export.pdf.filtered');
     Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 });

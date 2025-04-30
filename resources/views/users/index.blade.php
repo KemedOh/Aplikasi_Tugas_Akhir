@@ -14,26 +14,152 @@
 
     <div class="container mx-auto px-4 mt-4 mb-4">
         <div class="flex justify-center">
-            <div class="w-full md:w-10/12">
+            <div class="w-full md:w-12/12">
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">
+    <h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">Export Data</h3>
+    <div class="flex flex-wrap gap-6 items-end">
+        <!-- Filter Form Excel -->
+        <form action="{{ route('users.exportExcel') }}" method="GET" class="flex flex-wrap gap-6 w-full sm:w-auto">
+        <div class="w-full sm:w-auto">
+            <label for="start_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut
+                Mulai</label>
+            <input type="number" name="start_number" id="excel_start_number" min="1"
+                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+                value="{{ old('start_number') }}" onchange="adjustExcelEndNumber()" />
+        </div>
+        
+        <div class="w-full sm:w-auto">
+            <label for="end_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut Akhir</label>
+            <input type="number" name="end_number" id="excel_end_number" min="1"
+                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+                value="{{ old('end_number') }}" onchange="adjustExcelEndNumber()" />
+        </div>
+
+
+            <!-- Nama -->
+            <div class="w-full sm:w-auto">
+                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama</label>
+                <input type="text" name="name" id="name" placeholder="Masukkan Nama"
+                    class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <!-- Jenis Kelamin -->
+            <div class="w-full sm:w-auto">
+                <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Jenis
+                    Kelamin</label>
+                <select name="jenis_kelamin" id="jenis_kelamin"
+                    class="mt-1 border rounded px-3 py-2 w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500">
+                    <option value="">Pilih Jenis Kelamin</option>
+                    <option value="L">Laki-laki</option>
+                    <option value="P">Perempuan</option>
+                </select>
+            </div>
+
+            <!-- Tanggal Mulai -->
+            <div class="w-full sm:w-auto">
+                <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
+                    Mulai</label>
+                <input type="date" name="start_date" id="start_date"
+                    class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <!-- Tanggal Akhir -->
+            <div class="w-full sm:w-auto">
+                <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
+                    Akhir</label>
+                <input type="date" name="end_date" id="end_date"
+                    class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
+            </div>
+
+            <!-- Tombol Export -->
+            <div class="w-full sm:w-auto mt-4">
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+                    Export Excel
+                </button>
+            </div>
+        </form>
+
+        <!-- Export Semua Excel -->
+        <a href="{{ route('users.export.excel') }}"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+            Export Semua Excel
+        </a>
+
+<form action="{{ route('users.export.pdf.filtered') }}" method="GET" class="flex flex-wrap gap-6 w-full sm:w-auto">
+        <div class="w-full sm:w-auto">
+            <label for="start_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut
+                Mulai</label>
+            <input type="number" name="start_number" id="pdf_start_number" min="1"
+                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+                value="{{ old('start_number') }}" onchange="adjustPdfEndNumber()" />
+        </div>
+        
+        <div class="w-full sm:w-auto">
+            <label for="end_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut Akhir</label>
+            <input type="number" name="end_number" id="pdf_end_number" min="1"
+                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+                value="{{ old('end_number') }}" onchange="adjustPdfEndNumber()" />
+        </div>
+
+    <!-- Nama -->
+    <div class="w-full sm:w-auto">
+        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama</label>
+        <input type="text" name="name" id="name" placeholder="Masukkan Nama"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
+    </div>
+
+    <!-- Jenis Kelamin -->
+    <div class="w-full sm:w-auto">
+        <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Jenis
+            Kelamin</label>
+        <select name="jenis_kelamin" id="jenis_kelamin"
+            class="mt-1 border rounded px-3 py-2 w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500">
+            <option value="">Pilih Jenis Kelamin</option>
+            <option value="L">Laki-laki</option>
+            <option value="P">Perempuan</option>
+        </select>
+    </div>
+
+    <!-- Tanggal Mulai -->
+    <div class="w-full sm:w-auto">
+        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
+            Mulai</label>
+        <input type="date" name="start_date" id="start_date"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
+    </div>
+
+    <!-- Tanggal Akhir -->
+    <div class="w-full sm:w-auto">
+        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
+            Akhir</label>
+        <input type="date" name="end_date" id="end_date"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
+    </div>
+
+    <!-- Tombol Export -->
+    <div class="w-full sm:w-auto mt-4">
+        <button type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+            Export Pdf
+        </button>
+    </div>
+</form>
+        <!-- Export Semua PDF -->
+        <a href="{{ route('users.export.pdf') }}"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+            Export Semua PDF
+        </a>
+    </div>
+</div>
+
+
                 <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden">
                     <div class="bg-gray-200 dark:bg-gray-700 px-4 py-2">
                         <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200">{{ __('Daftar Pengguna') }}
                         </h3>
                     </div>
                     <div class="p-4">
-                        <a href="#" id="openAddModalButton"
-                            class="inline-block bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-md transition-all hover:scale-105">
-                            Tambah User
-                        </a>
-                        <a href="{{ route('users.export.excel') }}"
-                            class="inline-block bg-green-600 hover:bg-green-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-md transition-all hover:scale-105">
-                            Export Excel
-                        </a>
-
-                        <a href="{{ route('users.export.pdf') }}"
-                            class="inline-block bg-red-600 hover:bg-red-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-md transition-all hover:scale-105">
-                            Export PDF
-                        </a>
 
                         <!-- Tabel dengan scroll horizontal untuk responsif -->
                         <div class="overflow-x-auto">
@@ -59,6 +185,8 @@
                                             Telepon</th>
                                         <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
                                             Orang Tua</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Timestamp</th>
                                         <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
                                             Aksi</th>
                                     </tr>
@@ -86,6 +214,9 @@
                                                 {{ $user->nama_ayah }} & {{ $user->nama_ibu }}<br>
                                                 <small
                                                     class="text-gray-500 dark:text-gray-400">{{ $user->nomor_telepon_ortu }}</small>
+                                            </td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->created_at ? $user->created_at->format('Y-m-d H:i:s') : '-' }}
                                             </td>
                                             <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
                                                 <button data-user='@json($user)' onclick="openEditModal(this)"
@@ -368,9 +499,22 @@
         }
     }
 </script>
+<script>
+    function adjustExcelEndNumber() {
+        let start = parseInt(document.getElementById("excel_start_number").value);
+        let end = parseInt(document.getElementById("excel_end_number").value);
+        if (end < start) {
+            document.getElementById("excel_end_number").value = start;
+        }
+    }
 
-
-
-
+    function adjustPdfEndNumber() {
+        let start = parseInt(document.getElementById("pdf_start_number").value);
+        let end = parseInt(document.getElementById("pdf_end_number").value);
+        if (end < start) {
+            document.getElementById("pdf_end_number").value = start;
+        }
+    }
+</script>
 
 </x-app-layout>

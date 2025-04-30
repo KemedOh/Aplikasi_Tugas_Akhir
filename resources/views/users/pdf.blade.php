@@ -35,6 +35,7 @@
     <table>
         <thead>
             <tr>
+                <th>No</th>
                 <th>ID</th>
                 <th>Nama</th>
                 <th>Email</th>
@@ -48,8 +49,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($users as $user)
+            @foreach ($users as $index => $user)
                 <tr>
+                    <td>{{ $index + 1 }}</td> <!-- Menampilkan nomor urut -->
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
