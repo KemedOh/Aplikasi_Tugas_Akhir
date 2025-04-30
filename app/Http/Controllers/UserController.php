@@ -120,29 +120,36 @@ public function update(Request $request, $id)
         'email' => 'required|string|email|max:255|unique:users,email,' . $user->id, // Validasi email dengan pengecualian untuk email yang sama
         'role_id' => 'required|exists:roles,id', // Validasi role_id harus ada dalam tabel roles
         'asal_sekolah' => 'required|string|max:255',
-        'tanggal_lahir' => 'required|date',
+        'tanggal_lahir' => 'nullable|date',  // Menambahkan nullable jika tidak ada inputan untuk tanggal_lahir
         'nomor_telepon' => 'required|string|max:15',
-        'nama_ayah' => 'required|string|max:255',
-        'nama_ibu' => 'required|string|max:255',
-        'nomor_telepon_ortu' => 'required|string|max:15',
+        'nama_ayah' => 'nullable|string|max:255', // Menambahkan nullable jika tidak ada inputan untuk nama_ayah
+        'nama_ibu' => 'nullable|string|max:255', // Menambahkan nullable jika tidak ada inputan untuk nama_ibu
+        'nomor_telepon_ortu' => 'nullable|string|max:15', // Menambahkan nullable jika tidak ada inputan untuk nomor_telepon_ortu
     ]);
 
-    // Perbarui data pengguna berdasarkan data yang telah divalidasi
-    $user->update([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'role_id' => $validatedData['role_id'],
-        'asal_sekolah' => $validatedData['asal_sekolah'],
-        'tanggal_lahir' => $validatedData['tanggal_lahir'],
-        'nomor_telepon' => $validatedData['nomor_telepon'],
-        'nama_ayah' => $validatedData['nama_ayah'],
-        'nama_ibu' => $validatedData['nama_ibu'],
-        'nomor_telepon_ortu' => $validatedData['nomor_telepon_ortu'],
-    ]);
+    try {
+        // Perbarui data pengguna berdasarkan data yang telah divalidasi
+        $user->update([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'role_id' => $validatedData['role_id'],
+            'asal_sekolah' => $validatedData['asal_sekolah'],
+            'tanggal_lahir' => $validatedData['tanggal_lahir'] ?? $user->tanggal_lahir, // Menggunakan nilai lama jika tidak ada input
+            'nomor_telepon' => $validatedData['nomor_telepon'],
+            'nama_ayah' => $validatedData['nama_ayah'] ?? $user->nama_ayah, // Menggunakan nilai lama jika tidak ada input
+            'nama_ibu' => $validatedData['nama_ibu'] ?? $user->nama_ibu, // Menggunakan nilai lama jika tidak ada input
+            'nomor_telepon_ortu' => $validatedData['nomor_telepon_ortu'] ?? $user->nomor_telepon_ortu, // Menggunakan nilai lama jika tidak ada input
+        ]);
 
-    // Kembalikan respons JSON dengan pesan sukses
-    return response()->json(['message' => 'User berhasil diperbarui']);
+        // Jika sukses, redirect atau kembali tanpa mengirim respons JSON
+        return redirect()->route('users.index');
+
+    } catch (\Exception $e) {
+        // Jika terjadi kesalahan, kembalikan respons JSON dengan pesan error
+        return response()->json(['message' => 'Terjadi kesalahan saat memperbarui user', 'error' => $e->getMessage()], 500);
+    }
 }
+
 
 
     /**

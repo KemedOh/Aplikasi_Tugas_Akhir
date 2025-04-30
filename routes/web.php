@@ -42,7 +42,7 @@ Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class.':admin,su
     Route::resource('users', UserController::class);
     Route::get('/users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
     Route::get('/users/export/pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf');
-    Route::post('/update-user', [UserController::class, 'update'])->name('update.user');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 });
 
 
