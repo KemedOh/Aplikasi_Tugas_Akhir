@@ -15,60 +15,81 @@
     <div class="container mx-auto px-4 mt-4 mb-4">
         <div class="flex justify-center">
             <div class="w-full md:w-10/12">
-                <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                    <div class="bg-gray-200 px-4 py-2">
-                        <h3 class="font-semibold text-lg">{{ __('Daftar Pengguna') }}</h3>
+                <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden">
+                    <div class="bg-gray-200 dark:bg-gray-700 px-4 py-2">
+                        <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200">{{ __('Daftar Pengguna') }}
+                        </h3>
                     </div>
                     <div class="p-4">
-                        <a href="#" id="openModal"
-                            class="inline-block bg-blue-600 text-white text-sm font-semibold py-2 px-4 rounded hover:bg-blue-500">
+                        <a href="#" id="openModalButton"
+                            class="inline-block bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-md transition-all hover:scale-105">
                             Tambah User
                         </a>
                         <a href="{{ route('users.export.excel') }}"
-                            class="inline-block bg-green-600 text-white text-sm font-semibold py-2 px-4 rounded hover:bg-green-500">
+                            class="inline-block bg-green-600 hover:bg-green-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-md transition-all hover:scale-105">
                             Export Excel
                         </a>
 
                         <a href="{{ route('users.export.pdf') }}"
-                            class="inline-block bg-red-600 text-white text-sm font-semibold py-2 px-4 rounded hover:bg-red-500">
+                            class="inline-block bg-red-600 hover:bg-red-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-md transition-all hover:scale-105">
                             Export PDF
                         </a>
 
                         <!-- Tabel dengan scroll horizontal untuk responsif -->
                         <div class="overflow-x-auto">
-                            <table class="min-w-full mt-4 bg-white border border-gray-300" id="usersTable">
+                            <table
+                                class="min-w-full mt-4 bg-white dark:bg-gray-900 border border-gray-200 rounded-xl shadow-sm">
                                 <thead>
-                                    <tr class="bg-gray-100">
-                                        <th class="border-b border-gray-300 px-4 py-2">No</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Nama</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Email</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Role</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Tanggal Lahir</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Jenis Kelamin</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Asal Sekolah</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Telepon</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Orang Tua</th>
-                                        <th class="border-b border-gray-300 px-4 py-2">Aksi</th>
+                                    <tr class="bg-gray-100 dark:bg-gray-700">
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            No</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Nama</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Email</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Role</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Tanggal Lahir</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Jenis Kelamin</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Asal Sekolah</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Telepon</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Orang Tua</th>
+                                        <th class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($users as $index => $user)
-                                        <tr class="hover:bg-gray-100">
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $index + 1 }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $user->name }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $user->email }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $user->role->role }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $user->tanggal_lahir }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $user->jenis_kelamin }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $user->asal_sekolah }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">{{ $user->nomor_telepon }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2">
+                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $index + 1 }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->name }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->email }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->role->role }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->tanggal_lahir }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->jenis_kelamin }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->asal_sekolah }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                {{ $user->nomor_telepon }}</td>
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
                                                 {{ $user->nama_ayah }} & {{ $user->nama_ibu }}<br>
-                                                <small class="text-gray-500">{{ $user->nomor_telepon_ortu }}</small>
+                                                <small
+                                                    class="text-gray-500 dark:text-gray-400">{{ $user->nomor_telepon_ortu }}</small>
                                             </td>
-                                            <td class="border-b border-gray-300 px-4 py-2">
+                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
                                                 <a href="#"
-                                                    class="edit-user-link inline-block bg-yellow-500 text-white text-sm font-semibold py-1 px-3 rounded hover:bg-yellow-400"
+                                                    class="edit-user-link inline-block bg-yellow-500 hover:bg-yellow-400 text-white text-sm font-semibold py-1 px-3 rounded-xl shadow-md transition-all hover:scale-105"
                                                     data-id="{{ $user->id }}" data-name="{{ $user->name }}"
                                                     data-email="{{ $user->email }}" data-role-id="{{ $user->role_id }}"
                                                     data-asal-sekolah="{{ $user->asal_sekolah }}"
@@ -80,11 +101,15 @@
                                                     Edit
                                                 </a>
 
-                                                <a href="#"
-                                                    class="delete-user-link inline-block bg-red-500 text-white text-sm font-semibold py-1 px-3 rounded hover:bg-red-400"
-                                                    data-id="{{ $user->id }}" data-name="{{ $user->name }}">
-                                                    Hapus
-                                                </a>
+                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                    class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="delete-user-link inline-block bg-red-500 hover:bg-red-400 text-white text-sm font-semibold py-1 px-3 rounded-xl shadow-md transition-all hover:scale-105">
+                                                        Hapus
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -97,100 +122,211 @@
         </div>
     </div>
 
-    <!-- Modal Tambah User -->
-    <div id="userModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
-            <h2 class="text-lg font-semibold mb-4">Tambah Pengguna</h2>
-            <form action="{{ route('users.store') }}" method="POST">
-                @csrf
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Nama</label>
-                    <input type="text" id="name" name="name" required
-                        class="mt-1 block w-full border-gray-300 rounded-md">
-                </div>
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="text" id="email" name="email" required
-                        class="mt-1 block w-full border-gray-300 rounded-md">
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="password" name="password" required
-                        class="mt-1 block w-full border-gray-300 rounded-md">
-                </div>
-                <div class="mb-4">
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required
-                        class="mt-1 block w-full border-gray-300 rounded-md">
+<!-- Modal Add User -->
+<div id="addUserModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="modal-overlay absolute inset-0 bg-black opacity-50"></div>
+    <div class="modal-container bg-white rounded-lg w-full max-w-lg p-8">
+        <form method="POST" action="{{ route('users.store') }}">
+            @csrf
+            <div class="max-w-6xl w-full bg-[#E6EEFF] rounded-3xl flex flex-col md:flex-row overflow-hidden">
+
+                <!-- Left side form container -->
+                <div class="bg-white md:w-1/2 p-8 sm:p-12 rounded-t-3xl md:rounded-tr-none md:rounded-l-3xl">
+                    <p class="text-xs font-semibold text-[#4B4B6B] uppercase mb-2 tracking-wide">
+                        TAMBAH USER
+                    </p>
+                    <h1 class="text-3xl font-extrabold text-[#0B0B3B] mb-3 leading-tight">
+                        Tambah User Baru
+                    </h1>
+
+                    <div class="space-y-6">
+                        <!-- Name -->
+                        <div>
+                            <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="name">
+                                Name
+                            </label>
+                            <input id="name" name="name" type="text" value="{{ old('name') }}"
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
+                                   required />
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="email">
+                                E-Mail
+                            </label>
+                            <input id="email" name="email" type="email" value="{{ old('email') }}"
+                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
+                                   required />
+                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        </div>
+
+                        <!-- Role -->
+                        <div>
+                            <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="role_id">
+                                Role
+                            </label>
+                            <select id="role_id" name="role_id"
+                                    class="block mt-1 w-full border-[#A9B0D6] focus:border-[#3B4BFF] focus:ring-[#3B4BFF] rounded-md shadow-sm text-black"
+                                    required>
+                                <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>Mahasiswa</option>
+                                <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>Admin</option>
+                                <option value="3" {{ old('role_id') == 3 ? 'selected' : '' }}>Operator</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('role_id')" class="mt-2" />
+                        </div>
+
+                        <!-- Conditional Fields (shown when Role is 'Mahasiswa') -->
+                        <div id="additional_fields" class="hidden">
+                            <!-- Tanggal Lahir -->
+                            <div>
+                                <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="tanggal_lahir">
+                                    Tanggal Lahir
+                                </label>
+                                <input id="tanggal_lahir" name="tanggal_lahir" type="date" value="{{ old('tanggal_lahir') }}"
+                                       class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                <x-input-error :messages="$errors->get('tanggal_lahir')" class="mt-2" />
+                            </div>
+
+                            <!-- Jenis Kelamin -->
+                            <div>
+                                <label class="block text-[#3B3B5B] font-semibold text-sm mb-1">
+                                    Jenis Kelamin
+                                </label>
+                                <div class="flex items-center gap-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="jenis_kelamin" value="L"
+                                               {{ old('jenis_kelamin') == 'L' ? 'checked' : '' }} class="form-radio text-indigo-600">
+                                        <span class="ml-2 text-black">Laki-Laki</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="jenis_kelamin" value="P"
+                                               {{ old('jenis_kelamin') == 'P' ? 'checked' : '' }} class="form-radio text-indigo-600">
+                                        <span class="ml-2 text-black">Perempuan</span>
+                                    </label>
+                                </div>
+                                <x-input-error :messages="$errors->get('jenis_kelamin')" class="mt-2" />
+                            </div>
+
+                            <!-- Asal Sekolah -->
+                            <div>
+                                <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="asal_sekolah">
+                                    Asal Sekolah
+                                </label>
+                                <input id="asal_sekolah" name="asal_sekolah" type="text" value="{{ old('asal_sekolah') }}"
+                                       class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
+                                <x-input-error :messages="$errors->get('asal_sekolah')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end mt-4">
+                            <x-primary-button class="ml-4">
+                                {{ __('Tambah User') }}
+                            </x-primary-button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <label for="role_id" class="block text-sm font-medium text-gray-700">Role</label>
-                    <select id="role_id" name="role_id" class="block mt-1 w-full" required>
-                        <option value="" disabled selected>Pilih Role</option>
-                        @foreach($roles as $role)
-                            @if (Auth::user()->role->role === 'superadmin' || ($role->role === 'mahasiswa' && Auth::user()->role->role === 'admin'))
-                                <option value="{{ $role->id }}">{{ $role->role }}</option>
-                            @endif
-                        @endforeach
-                    </select>
+                <!-- Right side illustration container -->
+                <div class="md:w-1/2 bg-[#E6EEFF] flex flex-col items-center justify-start p-8 sm:p-12 rounded-b-3xl md:rounded-bl-none md:rounded-r-3xl">
+                    <img class="max-w-full h-auto" src="https://storage.googleapis.com/a1aa/image/39f76a1f-5acf-4a5e-bca0-417fd2a74a44.jpg" alt="Illustration"/>
                 </div>
-                <div class="flex justify-end mt-4">
-                    <button type="button" id="closeModal" class="mr-2 px-4 py-2 border rounded-md">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md">Simpan</button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-    <!-- Modal Edit -->
-    <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50 hidden">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 class="text-xl font-semibold mb-4">Edit User</h2>
-            <form id="editUserForm" action="/update-user" method="POST">
-                @csrf
-                <input type="hidden" id="user_id" name="user_id" value="">
-    
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" id="name" name="name" required class="mt-1 block w-full border-gray-300 rounded-md">
-                </div>
-    
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" required
-                        class="mt-1 block w-full border-gray-300 rounded-md">
-                </div>
-    
-                <div class="mb-4">
-                    <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-                    <select id="role" name="role" required class="mt-1 block w-full border-gray-300 rounded-md">
-                        <option value="Admin">Admin</option>
-                        <option value="Operator">Operator</option>
-                        <option value="Mahasiswa">Mahasiswa</option>
-                    </select>
-                </div>
-    
-                <div class="flex justify-end gap-2">
-                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-300 text-black rounded-md">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+</div>
 
     <script>
-        document.getElementById('openModal').addEventListener('click', function (event) {
-            event.preventDefault();
-            document.getElementById('userModal').classList.remove('hidden');
+
+        // Event listener untuk tombol Edit User
+        document.querySelectorAll('.edit-user-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const userId = link.getAttribute('data-id');
+                const name = link.getAttribute('data-name');
+                const email = link.getAttribute('data-email');
+                const roleId = link.getAttribute('data-role-id');
+                const asalSekolah = link.getAttribute('data-asal-sekolah');
+                const tanggalLahir = link.getAttribute('data-tanggal-lahir');
+                const nomorTelepon = link.getAttribute('data-nomor-telepon');
+                const namaAyah = link.getAttribute('data-nama-ayah');
+                const namaIbu = link.getAttribute('data-nama-ibu');
+                const nomorTeleponOrtu = link.getAttribute('data-nomor-telepon-ortu');
+
+                document.getElementById('user_id').value = userId;
+                document.getElementById('name').value = name;
+                document.getElementById('email').value = email;
+                document.getElementById('role').value = roleId;
+
+                document.getElementById('editModal').classList.remove('hidden');
+            });
+        });
+    document.addEventListener("DOMContentLoaded", function () {
+            let roleSelect = document.getElementById("role_id");
+            let additionalFields = document.getElementById("additional_fields");
+            let modal = document.getElementById("addUserModal");
+
+            // Fungsi untuk menampilkan field tambahan saat role mahasiswa dipilih
+            function toggleRoleFields() {
+                let selectedRole = roleSelect.options[roleSelect.selectedIndex].text.toLowerCase();
+                if (selectedRole === "mahasiswa") {
+                    additionalFields.classList.remove("hidden");
+                } else {
+                    additionalFields.classList.add("hidden");
+                }
+            }
+
+            roleSelect.addEventListener("change", toggleRoleFields);
+            toggleRoleFields(); // Memastikan bahwa field tambahan muncul saat pertama kali load
+
+            // Fungsi untuk membuka modal
+            document.getElementById("openModalButton").addEventListener("click", function () {
+                modal.classList.remove("hidden");
+            });
+
+            // Fungsi untuk menutup modal
+            modal.querySelector(".modal-overlay").addEventListener("click", function () {
+                modal.classList.add("hidden");
+            });
         });
 
-        document.getElementById('closeModal').addEventListener('click', function () {
-            document.getElementById('userModal').classList.add('hidden');
-        });
-        
+
+        // Close modal edit
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+         // Event listener untuk tombol Delete User
+            document.querySelectorAll('.delete-user-link').forEach(function (button) {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Menanyakan konfirmasi sebelum menghapus
+                    if (confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
+                        // Ambil URL form penghapusan
+                        const form = button.closest('form');
+                        const url = form.action;
+
+                        // Gunakan fetch API untuk menghapus user
+                        fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ _method: 'DELETE' })
+                        })
+                            .then(response => response.json()) // Response kosong
+                            .then(() => {
+                                location.reload(); // Refresh halaman setelah menghapus
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Terjadi kesalahan saat menghapus user.');
+                            });
+                    }
+                });
+            });
     </script>
-
 </x-app-layout>

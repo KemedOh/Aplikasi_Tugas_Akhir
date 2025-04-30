@@ -118,7 +118,7 @@ public function update(Request $request, $id)
     $user = User::findOrFail($id);
     $user->delete();
 
-    return response()->json(['message' => 'User berhasil dihapus']);
+    return response()->json(); // Response kosong, tanpa pesan
     }
     public function exportExcel()
     {
