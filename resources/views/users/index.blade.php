@@ -21,7 +21,7 @@
                         </h3>
                     </div>
                     <div class="p-4">
-                        <a href="#" id="openModalButton"
+                        <a href="#" id="openAddModalButton"
                             class="inline-block bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-md transition-all hover:scale-105">
                             Tambah User
                         </a>
@@ -123,210 +123,120 @@
     </div>
 
 <!-- Modal Add User -->
-<div id="addUserModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-    <div class="modal-overlay absolute inset-0 bg-black opacity-50"></div>
-    <div class="modal-container bg-white rounded-lg w-full max-w-lg p-8">
-        <form method="POST" action="{{ route('users.store') }}">
+<div id="addUserModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div
+        class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-6 rounded-xl w-full max-w-lg relative shadow-lg transition-all duration-300">
+
+        <button onclick="closeAddUserModal()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-xl">
+            &times;
+        </button>
+
+        <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Tambah User Baru</h2>
+
+        @if ($errors->any())
+            <div class="mb-4 bg-red-100 dark:bg-red-200 text-red-800 px-4 py-2 rounded">
+                <ul class="list-disc list-inside text-sm">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('users.store') }}" class="space-y-3">
             @csrf
-            <div class="max-w-6xl w-full bg-[#E6EEFF] rounded-3xl flex flex-col md:flex-row overflow-hidden">
 
-                <!-- Left side form container -->
-                <div class="bg-white md:w-1/2 p-8 sm:p-12 rounded-t-3xl md:rounded-tr-none md:rounded-l-3xl">
-                    <p class="text-xs font-semibold text-[#4B4B6B] uppercase mb-2 tracking-wide">
-                        TAMBAH USER
-                    </p>
-                    <h1 class="text-3xl font-extrabold text-[#0B0B3B] mb-3 leading-tight">
-                        Tambah User Baru
-                    </h1>
+            <input type="text" name="name" placeholder="Nama Lengkap"
+                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required>
 
-                    <div class="space-y-6">
-                        <!-- Name -->
-                        <div>
-                            <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="name">
-                                Name
-                            </label>
-                            <input id="name" name="name" type="text" value="{{ old('name') }}"
-                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
-                                   required />
-                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                        </div>
+            <input type="email" name="email" placeholder="Email"
+                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required>
 
-                        <!-- Email -->
-                        <div>
-                            <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="email">
-                                E-Mail
-                            </label>
-                            <input id="email" name="email" type="email" value="{{ old('email') }}"
-                                   class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]"
-                                   required />
-                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                        </div>
+            <input type="password" name="password" placeholder="Password"
+                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required>
 
-                        <!-- Role -->
-                        <div>
-                            <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="role_id">
-                                Role
-                            </label>
-                            <select id="role_id" name="role_id"
-                                    class="block mt-1 w-full border-[#A9B0D6] focus:border-[#3B4BFF] focus:ring-[#3B4BFF] rounded-md shadow-sm text-black"
-                                    required>
-                                <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>Mahasiswa</option>
-                                <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>Admin</option>
-                                <option value="3" {{ old('role_id') == 3 ? 'selected' : '' }}>Operator</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('role_id')" class="mt-2" />
-                        </div>
+            <input type="password" name="password_confirmation" placeholder="Konfirmasi Password"
+                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required>
 
-                        <!-- Conditional Fields (shown when Role is 'Mahasiswa') -->
-                        <div id="additional_fields" class="hidden">
-                            <!-- Tanggal Lahir -->
-                            <div>
-                                <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="tanggal_lahir">
-                                    Tanggal Lahir
-                                </label>
-                                <input id="tanggal_lahir" name="tanggal_lahir" type="date" value="{{ old('tanggal_lahir') }}"
-                                       class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
-                                <x-input-error :messages="$errors->get('tanggal_lahir')" class="mt-2" />
-                            </div>
+            <select id="addRole" name="role_id"
+                class="w-full p-2 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required>
+                <option value="">-- Pilih Role --</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->id }}">{{ $role->role }}</option>
+                @endforeach
+            </select>
 
-                            <!-- Jenis Kelamin -->
-                            <div>
-                                <label class="block text-[#3B3B5B] font-semibold text-sm mb-1">
-                                    Jenis Kelamin
-                                </label>
-                                <div class="flex items-center gap-4">
-                                    <label class="inline-flex items-center">
-                                        <input type="radio" name="jenis_kelamin" value="L"
-                                               {{ old('jenis_kelamin') == 'L' ? 'checked' : '' }} class="form-radio text-indigo-600">
-                                        <span class="ml-2 text-black">Laki-Laki</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="radio" name="jenis_kelamin" value="P"
-                                               {{ old('jenis_kelamin') == 'P' ? 'checked' : '' }} class="form-radio text-indigo-600">
-                                        <span class="ml-2 text-black">Perempuan</span>
-                                    </label>
-                                </div>
-                                <x-input-error :messages="$errors->get('jenis_kelamin')" class="mt-2" />
-                            </div>
+            <div id="addFields" class="hidden">
+                <input type="date" name="tanggal_lahir"
+                    class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
 
-                            <!-- Asal Sekolah -->
-                            <div>
-                                <label class="block text-[#3B3B5B] font-semibold text-sm mb-1" for="asal_sekolah">
-                                    Asal Sekolah
-                                </label>
-                                <input id="asal_sekolah" name="asal_sekolah" type="text" value="{{ old('asal_sekolah') }}"
-                                       class="w-full px-3 py-2 text-[#000000] placeholder-[#A9B0D6] rounded-md focus:outline-none border border-[#A9B0D6] focus-within:ring-2 focus-within:ring-[#3B4BFF]" />
-                                <x-input-error :messages="$errors->get('asal_sekolah')" class="mt-2" />
-                            </div>
-                        </div>
+                <select name="jenis_kelamin" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
+                    required>
+                    <option value="">-- Jenis Kelamin --</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
 
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ml-4">
-                                {{ __('Tambah User') }}
-                            </x-primary-button>
-                        </div>
-                    </div>
-                </div>
+                <input type="text" name="asal_sekolah" placeholder="Asal Sekolah"
+                    class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
 
-                <!-- Right side illustration container -->
-                <div class="md:w-1/2 bg-[#E6EEFF] flex flex-col items-center justify-start p-8 sm:p-12 rounded-b-3xl md:rounded-bl-none md:rounded-r-3xl">
-                    <img class="max-w-full h-auto" src="https://storage.googleapis.com/a1aa/image/39f76a1f-5acf-4a5e-bca0-417fd2a74a44.jpg" alt="Illustration"/>
-                </div>
+                <input type="text" name="nomor_telepon" placeholder="No. Telepon"
+                    class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+
+                <input type="text" name="nama_ayah" placeholder="Nama Ayah"
+                    class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                <input type="text" name="nama_ibu" placeholder="Nama Ibu"
+                    class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                <input type="text" name="nomor_telepon_ortu" placeholder="No. Telepon Ortu"
+                    class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors">
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-    <script>
 
-        // Event listener untuk tombol Edit User
-        document.querySelectorAll('.edit-user-link').forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const userId = link.getAttribute('data-id');
-                const name = link.getAttribute('data-name');
-                const email = link.getAttribute('data-email');
-                const roleId = link.getAttribute('data-role-id');
-                const asalSekolah = link.getAttribute('data-asal-sekolah');
-                const tanggalLahir = link.getAttribute('data-tanggal-lahir');
-                const nomorTelepon = link.getAttribute('data-nomor-telepon');
-                const namaAyah = link.getAttribute('data-nama-ayah');
-                const namaIbu = link.getAttribute('data-nama-ibu');
-                const nomorTeleponOrtu = link.getAttribute('data-nomor-telepon-ortu');
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const addModal = document.getElementById('addUserModal');
+        const openAddModalButton = document.getElementById('openAddModalButton');
+        const addRole = document.getElementById('addRole');
+        const addFields = document.getElementById('addFields');
 
-                document.getElementById('user_id').value = userId;
-                document.getElementById('name').value = name;
-                document.getElementById('email').value = email;
-                document.getElementById('role').value = roleId;
-
-                document.getElementById('editModal').classList.remove('hidden');
-            });
+        // Buka modal
+        openAddModalButton.addEventListener('click', () => {
+            addModal.classList.remove('hidden');
         });
-    document.addEventListener("DOMContentLoaded", function () {
-            let roleSelect = document.getElementById("role_id");
-            let additionalFields = document.getElementById("additional_fields");
-            let modal = document.getElementById("addUserModal");
 
-            // Fungsi untuk menampilkan field tambahan saat role mahasiswa dipilih
-            function toggleRoleFields() {
-                let selectedRole = roleSelect.options[roleSelect.selectedIndex].text.toLowerCase();
-                if (selectedRole === "mahasiswa") {
-                    additionalFields.classList.remove("hidden");
-                } else {
-                    additionalFields.classList.add("hidden");
-                }
+        // Tutup modal via tombol (X)
+        window.closeAddUserModal = function () {
+            addModal.classList.add('hidden');
+        };
+
+        // Tampilkan field tambahan jika role = Mahasiswa
+        function toggleAddFields() {
+            const selectedText = addRole.options[addRole.selectedIndex].text.toLowerCase();
+            if (selectedText === 'mahasiswa') {
+                addFields.classList.remove('hidden');
+            } else {
+                addFields.classList.add('hidden');
             }
-
-            roleSelect.addEventListener("change", toggleRoleFields);
-            toggleRoleFields(); // Memastikan bahwa field tambahan muncul saat pertama kali load
-
-            // Fungsi untuk membuka modal
-            document.getElementById("openModalButton").addEventListener("click", function () {
-                modal.classList.remove("hidden");
-            });
-
-            // Fungsi untuk menutup modal
-            modal.querySelector(".modal-overlay").addEventListener("click", function () {
-                modal.classList.add("hidden");
-            });
-        });
-
-
-        // Close modal edit
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
         }
 
-         // Event listener untuk tombol Delete User
-            document.querySelectorAll('.delete-user-link').forEach(function (button) {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault();
+        addRole.addEventListener('change', toggleAddFields);
+        toggleAddFields(); // trigger saat load awal
+    });
+</script>
 
-                    // Menanyakan konfirmasi sebelum menghapus
-                    if (confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
-                        // Ambil URL form penghapusan
-                        const form = button.closest('form');
-                        const url = form.action;
-
-                        // Gunakan fetch API untuk menghapus user
-                        fetch(url, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ _method: 'DELETE' })
-                        })
-                            .then(response => response.json()) // Response kosong
-                            .then(() => {
-                                location.reload(); // Refresh halaman setelah menghapus
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Terjadi kesalahan saat menghapus user.');
-                            });
-                    }
-                });
-            });
-    </script>
 </x-app-layout>

@@ -36,31 +36,66 @@ class UserController extends Controller
     /**
      * Store a newly created user in database.
      */
-    public function store(Request $request)
-    {
-try {
+public function store(Request $request)
+{
+ try {
+        // Validasi umum
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',  // Pastikan ada password_confirmation di request
             'role_id' => 'required|exists:roles,id',
         ]);
 
-        // Membuat user baru
-        User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-            'role_id' => $validatedData['role_id'],
-            'status' => 'active', // Sesuaikan dengan status yang diinginkan
-        ]);
+        // Validasi tambahan jika role adalah Mahasiswa (misalnya role_id == 1)
+        if ($request->role_id == 1) {
+            // Validasi khusus untuk mahasiswa
+            $request->validate([
+                'tanggal_lahir' => 'required|date',
+                'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+                'asal_sekolah' => 'required|string|max:255',
+                'nomor_telepon' => 'required|string|max:20',
+                'nama_ayah' => 'required|string|max:255',
+                'nama_ibu' => 'required|string|max:255',
+                'nomor_telepon_ortu' => 'required|string|max:20',
+            ]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
-        } catch (\Exception $e) {
-        Log::error('Gagal menyimpan user: ' . $e->getMessage());
-        return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+            // Menyesuaikan jenis kelamin menjadi 'L' atau 'P'
+            if ($request->has('jenis_kelamin')) {
+                $request->merge([
+                    'jenis_kelamin' => $request->jenis_kelamin === 'Laki-laki' ? 'L' : 'P'
+                ]);
+            }
+        }
+
+        // Simpan data user
+        $user = new User();
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->password = Hash::make($validatedData['password']); // Password di-hash
+        $user->role_id = $validatedData['role_id'];
+
+        // Simpan data tambahan jika role adalah mahasiswa
+        if ($request->role_id == 1) {
+            $user->tanggal_lahir = $request->tanggal_lahir;
+            $user->jenis_kelamin = $request->jenis_kelamin; // Sudah disesuaikan sebelumnya
+            $user->asal_sekolah = $request->asal_sekolah;
+            $user->nomor_telepon = $request->nomor_telepon;
+            $user->nama_ayah = $request->nama_ayah;
+            $user->nama_ibu = $request->nama_ibu;
+            $user->nomor_telepon_ortu = $request->nomor_telepon_ortu;
+        }
+
+        $user->save();
+
+    return redirect()->route('users.index');
+
+    } catch (\Exception $e) {
+        // Gagal menyimpan, redirect kembali dengan pesan error
+        return back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage())->withInput();
     }
-    }
+
+}
 
     /**
      * Show the form for editing the user.
@@ -115,10 +150,16 @@ public function update(Request $request, $id)
      */
     public function destroy($id)
     {
-    $user = User::findOrFail($id);
-    $user->delete();
+        try{
+            $user = User::findOrFail($id);
+            $user->delete();
 
-    return response()->json(); // Response kosong, tanpa pesan
+            return redirect()->route('users.index');
+
+            } catch (\Exception $e) {
+                // Gagal menyimpan, redirect kembali dengan pesan error
+                return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage())->withInput();
+            }
     }
     public function exportExcel()
     {
