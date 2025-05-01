@@ -37,5 +37,35 @@
         </main>
     </div>
 </body>
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-2">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-10">
+            <!-- Section 1: Logo and Copyright -->
+            <div class="flex flex-col items-center sm:items-start">
+                <img src="{{ asset('images/logoLP3I.png') }}" alt="Logo" class="w-60 mb-4">
+                <p class="text-sm text-center sm:text-left">&copy; {{ date('Y') }} {{ 'Ahmad Fauzi' }}. Semua hak cipta
+                    dilindungi.</p>
+            </div>
+
+            <!-- Section 2: Contact Info -->
+            <div class="flex flex-col space-y-4">
+                <h3 class="font-semibold text-lg text-gray-300">Kontak</h3>
+                <ul class="space-y-2">
+                    <li class="text-gray-400">Jl. Ir. H. Juanda No.106, Panglayungan, Kec. Cipedes
+                    Kota Tasikmalaya, Jawa Barat 46151</li>
+                    <li class="text-gray-400">Email: <a href="mailto:email@domain.com"
+                            class="hover:text-blue-500">ahmadsioh46@gmail.com</a></li>
+                    <li class="text-gray-400">Phone: +62 888 8888 8888</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center border-t border-gray-700 pt-6">
+            <p class="text-xs sm:text-sm text-gray-400">&copy; {{ date('Y') }} {{ 'Ahmad Fauzi' }}. All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>
 
 </html>

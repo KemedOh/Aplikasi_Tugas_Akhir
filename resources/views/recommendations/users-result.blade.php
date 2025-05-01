@@ -52,7 +52,7 @@
     <div>
         <button type="submit" formaction="{{ route('recommendations.exportFiltered') }}"
             class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">
-            Export Excel
+            Export Filter Excel
         </button>
     </div>
 
@@ -68,7 +68,7 @@
         <div>
             <button type="submit" formaction="{{ route('recommendations.exportPdfFiltered') }}"
                 class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">
-                Export PDF
+                Export Filter PDF
             </button>
         </div>
 

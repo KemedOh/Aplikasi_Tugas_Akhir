@@ -22,6 +22,12 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 Route::view('/user-guide', 'pages.user-guide')->name('user.guide');
 Route::view('/about', 'pages.about')->name('about');
+Route::prefix('jurusan')->name('majors.')->group(function () {
+    Route::view('/informatika', 'pages.majors.informatika')->name('informatika');
+    Route::view('/otomotif', 'pages.majors.otomotif')->name('otomotif');
+    Route::view('/pemasaran', 'pages.majors.pemasaran')->name('pemasaran');
+    Route::view('/keuangan', 'pages.majors.keuangan')->name('keuangan');
+});
 
 
 Route::middleware('auth')->group(function () {

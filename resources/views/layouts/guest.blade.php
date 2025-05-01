@@ -28,5 +28,10 @@
 
     </div>
 </body>
-
+<script>
+    function toggleDropdown() {
+        const dropdown = document.getElementById('dropdownMenu');
+        dropdown.classList.toggle('hidden'); // Menyembunyikan/memunculkan dropdown
+    }
+</script>
 </html>

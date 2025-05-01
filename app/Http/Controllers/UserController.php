@@ -39,7 +39,7 @@ class UserController extends Controller
      */
 public function store(Request $request)
 {
- try {
+    try {
         // Validasi umum
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -89,14 +89,14 @@ public function store(Request $request)
 
         $user->save();
 
-    return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('success', 'Data berhasil disimpan!');
 
     } catch (\Exception $e) {
         // Gagal menyimpan, redirect kembali dengan pesan error
         return back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage())->withInput();
     }
-
 }
+
 
     /**
      * Show the form for editing the user.

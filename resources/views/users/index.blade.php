@@ -20,7 +20,6 @@
     <div class="flex flex-wrap gap-6 items-end">
         <!-- Filter Form Excel -->
 <form method="GET" class="flex flex-wrap gap-6 w-full sm:w-auto">
-    <!-- Nomor Urut Mulai untuk Excel -->
     <!-- Nomor Urut Mulai -->
     <div class="w-full sm:w-auto">
         <label for="start_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut
@@ -90,7 +89,7 @@
             class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
             Export Filter PDF
         </button>
-        
+
     <!-- Export Semua PDF -->
     <button formaction="{{ route('users.export.pdf') }}"
         class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
@@ -172,22 +171,42 @@
                                                 {{ $user->created_at ? $user->created_at->format('Y-m-d H:i:s') : '-' }}
                                             </td>
                                         <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                            <!-- Edit Button -->
-                                            <button data-user='@json($user)' onclick="openEditModal(this)"
-                                                class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105 mr-2">
-                                                Edit
-                                            </button>
+                                            @if (auth()->user()->role === 'superadmin')
+                                                @if(auth()->id() !== $user->id)
+                                                    <!-- Tombol untuk superadmin ke user lain -->
+                                                    <button data-user='@json($user)' onclick="openEditModal(this)"
+                                                        class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105 mr-2">
+                                                        Edit
+                                                    </button>
 
-                                            <!-- Delete Button -->
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105">
-                                                    Hapus
+                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105">
+                                                            Hapus
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @elseif (auth()->user()->role === 'admin' && $user->role === 'mahasiswa')
+                                                <!-- Tombol untuk admin hanya ke mahasiswa -->
+                                                <button data-user='@json($user)' onclick="openEditModal(this)"
+                                                    class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105 mr-2">
+                                                    Edit
                                                 </button>
-                                            </form>
+
+                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </td>
+
+
 
                                         </tr>
                                     @endforeach
@@ -210,16 +229,15 @@
         </button>
 
         <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Tambah User Baru</h2>
-
-        @if ($errors->any())
-            <div class="mb-4 bg-red-100 dark:bg-red-200 text-red-800 px-4 py-2 rounded">
-                <ul class="list-disc list-inside text-sm">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+@if ($errors->any())
+    <div class="bg-red-200 text-red-800 p-2 mb-4 rounded">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
         <form method="POST" action="{{ route('users.store') }}" class="space-y-3">
             @csrf
@@ -231,25 +249,22 @@
             <input type="email" name="email" placeholder="Email"
                 class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required>
-<!-- Password -->
-<div class="relative">
-    <input type="password" id="password" name="password" placeholder="Password"
+<div class="relative mb-4">
+    <input type="password" id="addPassword" name="password" placeholder="Password"
         class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         required>
-    <!-- Toggle Icon di dalam input -->
-    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
-        <i id="toggleIcon" class="fas fa-eye"></i>
+    <button type="button" id="toggleAddPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+        <i id="toggleAddIcon" class="fas fa-eye"></i>
     </button>
 </div>
 
 <!-- Konfirmasi Password -->
-<div class="relative">
-    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password"
+<div class="relative mb-4">
+    <input type="password" id="addPasswordConfirmation" name="password_confirmation" placeholder="Konfirmasi Password"
         class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         required>
-    <!-- Toggle Icon di dalam input -->
-    <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
-        <i id="toggleConfirmIcon" class="fas fa-eye"></i>
+    <button type="button" id="toggleAddConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+        <i id="toggleAddConfirmIcon" class="fas fa-eye"></i>
     </button>
 </div>
 
@@ -334,23 +349,23 @@
                 required>
 
     <!-- Password Lama atau Buat Baru -->
-    <div class="relative">
-        <input type="password" name="password" id="passwordEdit" placeholder="Password Lama atau Buat Baru"
+    <div class="relative mb-4">
+        <input type="password" id="editPassword" name="password" placeholder="Password Lama atau Buat Baru"
             class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required>
-        <button type="button" id="togglePasswordEdit" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600">
-            <i id="toggleIconEdit" class="fas fa-eye"></i>
+        <button type="button" id="toggleEditPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+            <i id="toggleEditIcon" class="fas fa-eye"></i>
         </button>
     </div>
     
     <!-- Konfirmasi Password -->
-    <div class="relative">
-        <input type="password" name="password_confirmation" id="passwordConfirmationEdit" placeholder="Konfirmasi Password"
+    <div class="relative mb-4">
+        <input type="password" id="editPasswordConfirmation" name="password_confirmation" placeholder="Konfirmasi Password"
             class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required>
-        <button type="button" id="toggleConfirmPasswordEdit"
-            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600">
-            <i id="toggleConfirmIconEdit" class="fas fa-eye"></i>
+        <button type="button" id="toggleEditConfirmPassword"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+            <i id="toggleEditConfirmIcon" class="fas fa-eye"></i>
         </button>
     </div>
 
@@ -497,63 +512,47 @@
                 document.getElementById("end_number").value = start;
             }
     }
-
-   // Toggle untuk password
-    document.getElementById('togglePassword').addEventListener('click', function () {
-        const passwordField = document.getElementById('password');
-        const passwordIcon = document.getElementById('toggleIcon');
-
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';  // Mengubah input menjadi teks
-            passwordIcon.classList.remove('fa-eye');
-            passwordIcon.classList.add('fa-eye-slash');
-        } else {
-            passwordField.type = 'password';  // Mengubah input kembali ke password
-            passwordIcon.classList.remove('fa-eye-slash');
-            passwordIcon.classList.add('fa-eye');
-        }
-    });
-
-    // Toggle untuk konfirmasi password
-    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
-        const confirmPasswordField = document.getElementById('password_confirmation');
-        const confirmPasswordIcon = document.getElementById('toggleConfirmIcon');
-
-        if (confirmPasswordField.type === 'password') {
-            confirmPasswordField.type = 'text';  // Mengubah input menjadi teks
-            confirmPasswordIcon.classList.remove('fa-eye');
-            confirmPasswordIcon.classList.add('fa-eye-slash');
-        } else {
-            confirmPasswordField.type = 'password';  // Mengubah input kembali ke password
-            confirmPasswordIcon.classList.remove('fa-eye-slash');
-            confirmPasswordIcon.classList.add('fa-eye');
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // Get the password and confirm password fields for modal edit
-        const passwordEdit = document.getElementById('passwordEdit');
-        const togglePasswordEdit = document.getElementById('togglePasswordEdit');
-        const toggleIconEdit = document.getElementById('toggleIconEdit');
-        const passwordConfirmationEdit = document.getElementById('passwordConfirmationEdit');
-        const toggleConfirmPasswordEdit = document.getElementById('toggleConfirmPasswordEdit');
-        const toggleConfirmIconEdit = document.getElementById('toggleConfirmIconEdit');
-
-        // Toggle visibility for password fields
-        togglePasswordEdit.addEventListener('click', () => {
-            const type = passwordEdit.type === 'password' ? 'text' : 'password';
-            passwordEdit.type = type;
-            toggleIconEdit.classList.toggle('fa-eye');
-            toggleIconEdit.classList.toggle('fa-eye-slash');
-        });
-
-        toggleConfirmPasswordEdit.addEventListener('click', () => {
-            const type = passwordConfirmationEdit.type === 'password' ? 'text' : 'password';
-            passwordConfirmationEdit.type = type;
-            toggleConfirmIconEdit.classList.toggle('fa-eye');
-            toggleConfirmIconEdit.classList.toggle('fa-eye-slash');
-        });
-    });
-
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Toggle Tambah
+        document.getElementById("toggleAddPassword").addEventListener("click", function () {
+            const input = document.getElementById("addPassword");
+            const icon = document.getElementById("toggleAddIcon");
+            const type = input.type === "password" ? "text" : "password";
+            input.type = type;
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        });
+
+        document.getElementById("toggleAddConfirmPassword").addEventListener("click", function () {
+            const input = document.getElementById("addPasswordConfirmation");
+            const icon = document.getElementById("toggleAddConfirmIcon");
+            const type = input.type === "password" ? "text" : "password";
+            input.type = type;
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        });
+
+        // Toggle Edit
+        document.getElementById("toggleEditPassword").addEventListener("click", function () {
+            const input = document.getElementById("editPassword");
+            const icon = document.getElementById("toggleEditIcon");
+            const type = input.type === "password" ? "text" : "password";
+            input.type = type;
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        });
+
+        document.getElementById("toggleEditConfirmPassword").addEventListener("click", function () {
+            const input = document.getElementById("editPasswordConfirmation");
+            const icon = document.getElementById("toggleEditConfirmIcon");
+            const type = input.type === "password" ? "text" : "password";
+            input.type = type;
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        });
+    });
+</script>
+
 </x-app-layout>
