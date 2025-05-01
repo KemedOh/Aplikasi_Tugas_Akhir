@@ -11,6 +11,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,9 +21,11 @@
 <body class="font-sans antialiased bg-[#00426D] text-white">
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-[#00426D]">
 
-        <div class="w-full max-w-4xl mt-10 px-10 py-8 bg-[#00AEB6] shadow-xl overflow-hidden rounded-3xl">
-            {{ $slot }}
-        </div>
+    <div
+        class="w-full max-w-4xl mt-10 px-4 sm:px-6 lg:px-10 py-8 bg-[#00AEB6] shadow-xl overflow-hidden rounded-3xl mx-auto">
+        {{ $slot }}
+    </div>
+
     </div>
 </body>
 

@@ -17,27 +17,43 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class RecommendationController extends Controller
 {
-    public function exportPdfFiltered(Request $request)
+public function exportPdfFiltered(Request $request)
 {
-    $majorId = $request->input('major_id');
+    // Mengambil user yang memiliki rekomendasi valid
+    $users = User::with('recommendations.major')
+        ->whereHas('recommendations', function ($query) {
+            // Pastikan user memiliki rekomendasi dengan level 'sangat_direkomendasikan' atau 'cukup_direkomendasikan'
+            $query->whereIn('level', ['sangat_direkomendasikan', 'cukup_direkomendasikan']);
+        })
+        ->when($request->name, fn ($q) => $q->where('name', 'like', '%' . $request->name . '%'))
+        ->when($request->start_number, fn ($q) => $q->where('id', '>=', $request->start_number))
+        ->when($request->end_number, fn ($q) => $q->where('id', '<=', $request->end_number))
+        ->get();
 
-    $users = User::with(['recommendations.major'])
-        ->whereHas('recommendations', function ($query) use ($majorId) {
-            $query->where('major_id', $majorId);
-        })->get();
+    // Jika ada filter major_id, maka hanya user dengan rekomendasi jurusan yang sesuai yang diambil
+    if ($request->major_id) {
+        $users = $users->filter(function ($user) use ($request) {
+            return $user->recommendations->contains(function ($recommendation) use ($request) {
+                return $recommendation->major_id == $request->major_id;
+            });
+        });
+    }
 
-    return Pdf::loadView('recommendations.export-pdf', compact('users'))
-        ->setPaper('A4', 'landscape')
-        ->download('rekomendasi_user_filtered.pdf');
+    // Generate PDF
+    $pdf = PDF::loadView('recommendations.export-pdf', ['users' => $users]);
+
+    return $pdf->download('recommendations.pdf');
 }
 public function exportPdf()
 {
-    $users = User::with('recommendations.major')->get();
+    $users = User::with('recommendations.major')->get()->filter(function ($user) {
+        return $user->recommendations->whereIn('level', ['sangat_direkomendasikan', 'cukup_direkomendasikan'])->isNotEmpty();
+    });
 
-    return Pdf::loadView('recommendations.export-pdf', compact('users'))
-        ->setPaper('A4', 'landscape')
-        ->download('rekomendasi_user.pdf');
+    $pdf = PDF::loadView('recommendations.export-pdf', compact('users'));
+    return $pdf->download('semua_rekomendasi_user.pdf');
 }
+
     // Tampilkan Form Export
     public function showExportForm()
     {
@@ -60,8 +76,12 @@ public function exportPdf()
         // Mendapatkan major_id yang dipilih dari filter
         $majorId = $request->input('major_id');
 
-        // Export data berdasarkan jurusan yang dipilih
-        return Excel::download(new RecommendationsExport($majorId), 'rekomendasi_user_filtered.xlsx');
+        return Excel::download(new RecommendationsExport(
+    $request->major_id,
+    $request->start_number,
+    $request->end_number,
+    $request->name
+), 'recommendations.xlsx');
     }
 public function adminResults()
 {

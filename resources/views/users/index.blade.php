@@ -19,88 +19,25 @@
     <h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">Export Data</h3>
     <div class="flex flex-wrap gap-6 items-end">
         <!-- Filter Form Excel -->
-        <form action="{{ route('users.exportExcel') }}" method="GET" class="flex flex-wrap gap-6 w-full sm:w-auto">
-        <div class="w-full sm:w-auto">
-            <label for="start_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut
-                Mulai</label>
-            <input type="number" name="start_number" id="excel_start_number" min="1"
-                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
-                value="{{ old('start_number') }}" onchange="adjustExcelEndNumber()" />
-        </div>
-        
-        <div class="w-full sm:w-auto">
-            <label for="end_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut Akhir</label>
-            <input type="number" name="end_number" id="excel_end_number" min="1"
-                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
-                value="{{ old('end_number') }}" onchange="adjustExcelEndNumber()" />
-        </div>
+<form method="GET" class="flex flex-wrap gap-6 w-full sm:w-auto">
+    <!-- Nomor Urut Mulai untuk Excel -->
+    <!-- Nomor Urut Mulai -->
+    <div class="w-full sm:w-auto">
+        <label for="start_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut
+            Mulai</label>
+        <input type="number" name="start_number" id="start_number" min="1"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+            value="{{ old('start_number') }}" onchange="adjustNumber()" />
+    </div>
+    
+    <!-- Nomor Urut Akhir -->
+    <div class="w-full sm:w-auto">
+        <label for="end_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut Akhir</label>
+        <input type="number" name="end_number" id="end_number" min="1"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+            value="{{ old('end_number') }}" onchange="adjustNumber()" />
+    </div>
 
-
-            <!-- Nama -->
-            <div class="w-full sm:w-auto">
-                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama</label>
-                <input type="text" name="name" id="name" placeholder="Masukkan Nama"
-                    class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
-            </div>
-
-            <!-- Jenis Kelamin -->
-            <div class="w-full sm:w-auto">
-                <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Jenis
-                    Kelamin</label>
-                <select name="jenis_kelamin" id="jenis_kelamin"
-                    class="mt-1 border rounded px-3 py-2 w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500">
-                    <option value="">Pilih Jenis Kelamin</option>
-                    <option value="L">Laki-laki</option>
-                    <option value="P">Perempuan</option>
-                </select>
-            </div>
-
-            <!-- Tanggal Mulai -->
-            <div class="w-full sm:w-auto">
-                <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
-                    Mulai</label>
-                <input type="date" name="start_date" id="start_date"
-                    class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
-            </div>
-
-            <!-- Tanggal Akhir -->
-            <div class="w-full sm:w-auto">
-                <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
-                    Akhir</label>
-                <input type="date" name="end_date" id="end_date"
-                    class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
-            </div>
-
-            <!-- Tombol Export -->
-            <div class="w-full sm:w-auto mt-4">
-                <button type="submit"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
-                    Export Excel
-                </button>
-            </div>
-        </form>
-
-        <!-- Export Semua Excel -->
-        <a href="{{ route('users.export.excel') }}"
-            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
-            Export Semua Excel
-        </a>
-
-<form action="{{ route('users.export.pdf.filtered') }}" method="GET" class="flex flex-wrap gap-6 w-full sm:w-auto">
-        <div class="w-full sm:w-auto">
-            <label for="start_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut
-                Mulai</label>
-            <input type="number" name="start_number" id="pdf_start_number" min="1"
-                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
-                value="{{ old('start_number') }}" onchange="adjustPdfEndNumber()" />
-        </div>
-        
-        <div class="w-full sm:w-auto">
-            <label for="end_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut Akhir</label>
-            <input type="number" name="end_number" id="pdf_end_number" min="1"
-                class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
-                value="{{ old('end_number') }}" onchange="adjustPdfEndNumber()" />
-        </div>
 
     <!-- Nama -->
     <div class="w-full sm:w-auto">
@@ -123,33 +60,45 @@
 
     <!-- Tanggal Mulai -->
     <div class="w-full sm:w-auto">
-        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
-            Mulai</label>
+        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Mulai</label>
         <input type="date" name="start_date" id="start_date"
             class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
     </div>
 
     <!-- Tanggal Akhir -->
     <div class="w-full sm:w-auto">
-        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal
-            Akhir</label>
+        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Akhir</label>
         <input type="date" name="end_date" id="end_date"
             class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
     </div>
 
-    <!-- Tombol Export -->
-    <div class="w-full sm:w-auto mt-4">
-        <button type="submit"
+<div class="w-full sm:w-auto mt-4 flex flex-wrap gap-4">
+    <!-- Tombol Export Excel -->
+    <button type="submit" formaction="{{ route('users.exportExcel') }}"
+        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+        Export Filter Excel
+    </button>
+
+    <!-- Export Semua Excel -->
+    <button formaction="{{ route('users.export.excel') }}"
+        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+        Export Semua Excel
+    </button>
+
+        <!-- Tombol Export PDF -->
+        <button type="submit" formaction="{{ route('users.export.pdf.filtered') }}"
             class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
-            Export Pdf
+            Export Filter PDF
         </button>
-    </div>
+        
+    <!-- Export Semua PDF -->
+    <button formaction="{{ route('users.export.pdf') }}"
+        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+        Export Semua PDF
+    </button>
+</div>
 </form>
-        <!-- Export Semua PDF -->
-        <a href="{{ route('users.export.pdf') }}"
-            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
-            Export Semua PDF
-        </a>
+
     </div>
 </div>
 
@@ -160,6 +109,10 @@
                         </h3>
                     </div>
                     <div class="p-4">
+                        <button id="openAddModalButton" type="button"
+                            class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                            Tambah User
+                        </button>
 
                         <!-- Tabel dengan scroll horizontal untuk responsif -->
                         <div class="overflow-x-auto">
@@ -218,20 +171,24 @@
                                             <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
                                                 {{ $user->created_at ? $user->created_at->format('Y-m-d H:i:s') : '-' }}
                                             </td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                <button data-user='@json($user)' onclick="openEditModal(this)"
-                                                    class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded">
-                                                    Edit
-                                                </button>                                              <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                                    class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="delete-user-link inline-block bg-red-500 hover:bg-red-400 text-white text-sm font-semibold py-1 px-3 rounded-xl shadow-md transition-all hover:scale-105">
-                                                        Hapus
-                                                    </button>
-                                                </form>
-                                            </td>
+                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                            <!-- Edit Button -->
+                                            <button data-user='@json($user)' onclick="openEditModal(this)"
+                                                class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105 mr-2">
+                                                Edit
+                                            </button>
+
+                                            <!-- Delete Button -->
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -274,14 +231,27 @@
             <input type="email" name="email" placeholder="Email"
                 class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required>
+<!-- Password -->
+<div class="relative">
+    <input type="password" id="password" name="password" placeholder="Password"
+        class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required>
+    <!-- Toggle Icon di dalam input -->
+    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+        <i id="toggleIcon" class="fas fa-eye"></i>
+    </button>
+</div>
 
-            <input type="password" name="password" placeholder="Password"
-                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required>
-
-            <input type="password" name="password_confirmation" placeholder="Konfirmasi Password"
-                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required>
+<!-- Konfirmasi Password -->
+<div class="relative">
+    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password"
+        class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required>
+    <!-- Toggle Icon di dalam input -->
+    <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+        <i id="toggleConfirmIcon" class="fas fa-eye"></i>
+    </button>
+</div>
 
             <select id="addRole" name="role_id"
                 class="w-full p-2 border rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -363,13 +333,26 @@
                 class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required>
 
-            <!-- Password -->
-            <input type="password" name="password" placeholder="Password Lama atau Buat Baru"
-                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-            <!-- Konfirmasi Password -->
-            <input type="password" name="password_confirmation" placeholder="Konfirmasi Password"
-                class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <!-- Password Lama atau Buat Baru -->
+    <div class="relative">
+        <input type="password" name="password" id="passwordEdit" placeholder="Password Lama atau Buat Baru"
+            class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required>
+        <button type="button" id="togglePasswordEdit" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600">
+            <i id="toggleIconEdit" class="fas fa-eye"></i>
+        </button>
+    </div>
+    
+    <!-- Konfirmasi Password -->
+    <div class="relative">
+        <input type="password" name="password_confirmation" id="passwordConfirmationEdit" placeholder="Konfirmasi Password"
+            class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required>
+        <button type="button" id="toggleConfirmPasswordEdit"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600">
+            <i id="toggleConfirmIconEdit" class="fas fa-eye"></i>
+        </button>
+    </div>
 
             <!-- Role -->
             <select id="editRole" name="role_id"
@@ -500,21 +483,77 @@
     }
 </script>
 <script>
-    function adjustExcelEndNumber() {
-        let start = parseInt(document.getElementById("excel_start_number").value);
-        let end = parseInt(document.getElementById("excel_end_number").value);
-        if (end < start) {
-            document.getElementById("excel_end_number").value = start;
-        }
+    function adjustNumber() {
+            let start = parseInt(document.getElementById("start_number").value);
+            let end = parseInt(document.getElementById("end_number").value);
+
+            // Jika start_number atau end_number tidak valid, tidak ada tindakan
+            if (isNaN(start) || isNaN(end)) {
+                return;
+            }
+
+            // Jika end_number lebih kecil dari start_number, set end_number menjadi start_number
+            if (end < start) {
+                document.getElementById("end_number").value = start;
+            }
     }
 
-    function adjustPdfEndNumber() {
-        let start = parseInt(document.getElementById("pdf_start_number").value);
-        let end = parseInt(document.getElementById("pdf_end_number").value);
-        if (end < start) {
-            document.getElementById("pdf_end_number").value = start;
+   // Toggle untuk password
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
+        const passwordIcon = document.getElementById('toggleIcon');
+
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';  // Mengubah input menjadi teks
+            passwordIcon.classList.remove('fa-eye');
+            passwordIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';  // Mengubah input kembali ke password
+            passwordIcon.classList.remove('fa-eye-slash');
+            passwordIcon.classList.add('fa-eye');
         }
-    }
+    });
+
+    // Toggle untuk konfirmasi password
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+        const confirmPasswordField = document.getElementById('password_confirmation');
+        const confirmPasswordIcon = document.getElementById('toggleConfirmIcon');
+
+        if (confirmPasswordField.type === 'password') {
+            confirmPasswordField.type = 'text';  // Mengubah input menjadi teks
+            confirmPasswordIcon.classList.remove('fa-eye');
+            confirmPasswordIcon.classList.add('fa-eye-slash');
+        } else {
+            confirmPasswordField.type = 'password';  // Mengubah input kembali ke password
+            confirmPasswordIcon.classList.remove('fa-eye-slash');
+            confirmPasswordIcon.classList.add('fa-eye');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get the password and confirm password fields for modal edit
+        const passwordEdit = document.getElementById('passwordEdit');
+        const togglePasswordEdit = document.getElementById('togglePasswordEdit');
+        const toggleIconEdit = document.getElementById('toggleIconEdit');
+        const passwordConfirmationEdit = document.getElementById('passwordConfirmationEdit');
+        const toggleConfirmPasswordEdit = document.getElementById('toggleConfirmPasswordEdit');
+        const toggleConfirmIconEdit = document.getElementById('toggleConfirmIconEdit');
+
+        // Toggle visibility for password fields
+        togglePasswordEdit.addEventListener('click', () => {
+            const type = passwordEdit.type === 'password' ? 'text' : 'password';
+            passwordEdit.type = type;
+            toggleIconEdit.classList.toggle('fa-eye');
+            toggleIconEdit.classList.toggle('fa-eye-slash');
+        });
+
+        toggleConfirmPasswordEdit.addEventListener('click', () => {
+            const type = passwordConfirmationEdit.type === 'password' ? 'text' : 'password';
+            passwordConfirmationEdit.type = type;
+            toggleConfirmIconEdit.classList.toggle('fa-eye');
+            toggleConfirmIconEdit.classList.toggle('fa-eye-slash');
+        });
+    });
+
 </script>
-
 </x-app-layout>

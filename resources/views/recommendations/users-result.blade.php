@@ -11,55 +11,77 @@
             <h3 class="text-lg font-semibold text-gray-700 dark:text-white mb-4">Export Data</h3>
             <div class="flex flex-wrap gap-4 items-end">
                 <!-- Excel Filter -->
-                <form action="{{ route('recommendations.exportFiltered') }}" method="GET" class="flex items-end gap-2">
-                    <div>
-                        <label for="major_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Excel -
-                            Pilih Jurusan</label>
-                        <select name="major_id" id="major_id"
-                            class="mt-1 border rounded px-3 py-2 w-48 dark:bg-gray-700 dark:text-white">
-                            <option value="">Pilih Jurusan</option>
-                            @foreach ($majors as $major)
-                                <option value="{{ $major->id }}">{{ $major->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-                        Export Excel
-                    </button>
-                </form>
+<!-- Gabungkan Form PDF dan Excel -->
+<form method="GET" class="flex items-end gap-2">
+    <!-- Nomor Urut Mulai -->
+    <div class="w-full sm:w-auto">
+        <label for="start_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut
+            Mulai</label>
+        <input type="number" name="start_number" id="start_number" min="1"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+            value="{{ old('start_number') }}" onchange="adjustNumber()" />
+    </div>
+    
+    <!-- Nomor Urut Akhir -->
+    <div class="w-full sm:w-auto">
+        <label for="end_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor Urut Akhir</label>
+        <input type="number" name="end_number" id="end_number" min="1"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500"
+            value="{{ old('end_number') }}" onchange="adjustNumber()" />
+    </div>
+    
+    
+    <!-- Nama -->
+    <div class="w-full sm:w-auto">
+        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama</label>
+        <input type="text" name="name" id="name" placeholder="Masukkan Nama"
+            class="mt-1 border border-gray-300 p-2 rounded-lg w-full sm:w-auto dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500" />
+    </div>
+    <div>
+        <label for="major_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pilih Jurusan</label>
+        <select name="major_id" id="major_id"
+            class="mt-1 border rounded px-3 py-2 w-48 dark:bg-gray-700 dark:text-white">
+            <option value="">Pilih Jurusan</option>
+            @foreach ($majors as $major)
+                <option value="{{ $major->id }}">{{ $major->name }}</option>
+            @endforeach
+        </select>
+    </div>
 
-                <!-- Semua Excel -->
-                <a href="{{ route('recommendations.exportAll') }}"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">
-                    Export Semua Excel
-                </a>
+    <!-- Tombol Export Excel -->
+    <div>
+        <button type="submit" formaction="{{ route('recommendations.exportFiltered') }}"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">
+            Export Excel
+        </button>
+    </div>
 
-                <!-- PDF Filter -->
-                <form action="{{ route('recommendations.exportPdfFiltered') }}" method="GET"
-                    class="flex items-end gap-2">
-                    <div>
-                        <label for="major_id_pdf" class="block text-sm font-medium text-gray-700 dark:text-gray-300">PDF
-                            - Pilih Jurusan</label>
-                        <select name="major_id" id="major_id_pdf"
-                            class="mt-1 border rounded px-3 py-2 w-48 dark:bg-gray-700 dark:text-white">
-                            <option value="">Pilih Jurusan</option>
-                            @foreach ($majors as $major)
-                                <option value="{{ $major->id }}">{{ $major->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit"
-                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">
-                        Export PDF
-                    </button>
-                </form>
+    <!-- Semua Excel -->
+    <div class="w-full sm:w-auto mt-4">
+        <button type="submit" formaction="{{ route('recommendations.exportAll') }}"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+            Export Semua Excel
+        </button>
+    </div>
+    
+        <!-- Tombol Export PDF -->
+        <div>
+            <button type="submit" formaction="{{ route('recommendations.exportPdfFiltered') }}"
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">
+                Export PDF
+            </button>
+        </div>
 
-                <!-- Semua PDF -->
-                <a href="{{ route('recommendations.exportPdf') }}"
-                    class="bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">
-                    Export Semua PDF
-                </a>
+    <!-- Semua PDF -->
+    <div class="w-full sm:w-auto mt-4">
+        <button type="submit" formaction="{{ route('recommendations.exportPdf') }}"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md w-full sm:w-auto">
+            Export Semua PDF
+        </button>
+    </div>
+
+</form>
+
             </div>
         </div>
 
@@ -107,3 +129,12 @@
         </div>
     </div>
 </x-app-layout>
+<script>
+    function adjustNumber() {
+        let start = parseInt(document.getElementById("start_number").value);
+        let end = parseInt(document.getElementById("end_number").value);
+        if (!isNaN(start) && !isNaN(end) && end < start) {
+            document.getElementById("end_number").value = start;
+        }
+    }
+</script>
