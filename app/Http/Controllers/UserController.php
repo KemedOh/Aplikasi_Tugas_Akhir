@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -39,18 +42,42 @@ class UserController extends Controller
      */
 public function store(Request $request)
 {
+
     try {
-        // Validasi umum
+        // Ambil role user yang sedang login
+        $currentRoleId = Auth::user()->role_id;
+        $targetRoleId = $request->role_id;
+
+        // Admin hanya bisa buat Mahasiswa
+        if ($currentRoleId == 2 && $targetRoleId != 1) {
+            return back()->with('error', 'Admin hanya dapat menambahkan Mahasiswa.');
+        }
+
+        // Superadmin tidak boleh buat Superadmin
+        if ($currentRoleId == 3 && $targetRoleId == 3) {
+            return back()->with('error', 'Superadmin tidak dapat menambahkan Superadmin.');
+        }
+        $currentUserRole = Auth::user()->role_id;
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',  // Pastikan ada password_confirmation di request
+            'password' => 'required|string|min:8|confirmed',
             'role_id' => 'required|exists:roles,id',
         ]);
 
-        // Validasi tambahan jika role adalah Mahasiswa (misalnya role_id == 1)
+        // Cegah admin menambah selain mahasiswa
+        if ($currentUserRole == 2 && $request->role_id != 1) {
+            return back()->with('error', 'Admin hanya dapat menambahkan Mahasiswa.')->withInput();
+        }
+
+        // Cegah superadmin menambah superadmin
+        if ($currentUserRole == 3 && $request->role_id == 3) {
+            return back()->with('error', 'Superadmin tidak dapat menambahkan Superadmin lain.')->withInput();
+        }
+
+        // Validasi tambahan jika role Mahasiswa
         if ($request->role_id == 1) {
-            // Validasi khusus untuk mahasiswa
             $request->validate([
                 'tanggal_lahir' => 'required|date',
                 'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
@@ -61,25 +88,21 @@ public function store(Request $request)
                 'nomor_telepon_ortu' => 'required|string|max:20',
             ]);
 
-            // Menyesuaikan jenis kelamin menjadi 'L' atau 'P'
-            if ($request->has('jenis_kelamin')) {
-                $request->merge([
-                    'jenis_kelamin' => $request->jenis_kelamin === 'Laki-laki' ? 'L' : 'P'
-                ]);
-            }
+            // Konversi jenis kelamin
+            $request->merge([
+                'jenis_kelamin' => $request->jenis_kelamin === 'Laki-laki' ? 'L' : 'P'
+            ]);
         }
 
-        // Simpan data user
         $user = new User();
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
-        $user->password = Hash::make($validatedData['password']); // Password di-hash
+        $user->password = Hash::make($validatedData['password']);
         $user->role_id = $validatedData['role_id'];
 
-        // Simpan data tambahan jika role adalah mahasiswa
         if ($request->role_id == 1) {
             $user->tanggal_lahir = $request->tanggal_lahir;
-            $user->jenis_kelamin = $request->jenis_kelamin; // Sudah disesuaikan sebelumnya
+            $user->jenis_kelamin = $request->jenis_kelamin;
             $user->asal_sekolah = $request->asal_sekolah;
             $user->nomor_telepon = $request->nomor_telepon;
             $user->nama_ayah = $request->nama_ayah;
@@ -90,9 +113,7 @@ public function store(Request $request)
         $user->save();
 
         return redirect()->route('users.index')->with('success', 'Data berhasil disimpan!');
-
     } catch (\Exception $e) {
-        // Gagal menyimpan, redirect kembali dengan pesan error
         return back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage())->withInput();
     }
 }
@@ -112,46 +133,40 @@ public function store(Request $request)
      */
 public function update(Request $request, $id)
 {
-    // Temukan user berdasarkan ID
     $user = User::findOrFail($id);
 
-    // Validasi data yang diterima dari form
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id, // Validasi email dengan pengecualian untuk email yang sama
-        'role_id' => 'required|exists:roles,id', // Validasi role_id harus ada dalam tabel roles
-        'asal_sekolah' => 'required|string|max:255',
-        'tanggal_lahir' => 'nullable|date',  // Menambahkan nullable jika tidak ada inputan untuk tanggal_lahir
-        'nomor_telepon' => 'required|string|max:15',
-        'nama_ayah' => 'nullable|string|max:255', // Menambahkan nullable jika tidak ada inputan untuk nama_ayah
-        'nama_ibu' => 'nullable|string|max:255', // Menambahkan nullable jika tidak ada inputan untuk nama_ibu
-        'nomor_telepon_ortu' => 'nullable|string|max:15', // Menambahkan nullable jika tidak ada inputan untuk nomor_telepon_ortu
+        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        'role_id' => 'required|integer',
+        // Validasi untuk field tambahan mahasiswa jika role-nya Mahasiswa
+        'tanggal_lahir' => $request->input('role_id') == 1 ? 'required|date' : '',
+        'jenis_kelamin' => $request->input('role_id') == 1 ? 'required|in:L,P' : '',
+        'asal_sekolah' => $request->input('role_id') == 1 ? 'required|string' : '',
+        'nomor_telepon' => $request->input('role_id') == 1 ? 'required|string' : '',
+        'nama_ayah' => $request->input('role_id') == 1 ? 'required|string' : '',
+        'nama_ibu' => $request->input('role_id') == 1 ? 'required|string' : '',
+        'nomor_telepon_ortu' => $request->input('role_id') == 1 ? 'required|string' : '',
     ]);
 
-    try {
-        // Perbarui data pengguna berdasarkan data yang telah divalidasi
+    // Update data user
+    $user->update($validatedData);
+
+    // Jika role Mahasiswa, update data mahasiswa (field mahasiswa langsung di tabel users)
+    if ($request->input('role_id') == 1) {
         $user->update([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'role_id' => $validatedData['role_id'],
-            'asal_sekolah' => $validatedData['asal_sekolah'],
-            'tanggal_lahir' => $validatedData['tanggal_lahir'] ?? $user->tanggal_lahir, // Menggunakan nilai lama jika tidak ada input
-            'nomor_telepon' => $validatedData['nomor_telepon'],
-            'nama_ayah' => $validatedData['nama_ayah'] ?? $user->nama_ayah, // Menggunakan nilai lama jika tidak ada input
-            'nama_ibu' => $validatedData['nama_ibu'] ?? $user->nama_ibu, // Menggunakan nilai lama jika tidak ada input
-            'nomor_telepon_ortu' => $validatedData['nomor_telepon_ortu'] ?? $user->nomor_telepon_ortu, // Menggunakan nilai lama jika tidak ada input
+            'tanggal_lahir' => $request->input('tanggal_lahir'),
+            'jenis_kelamin' => $request->input('jenis_kelamin'),
+            'asal_sekolah' => $request->input('asal_sekolah'),
+            'nomor_telepon' => $request->input('nomor_telepon'),
+            'nama_ayah' => $request->input('nama_ayah'),
+            'nama_ibu' => $request->input('nama_ibu'),
+            'nomor_telepon_ortu' => $request->input('nomor_telepon_ortu'),
         ]);
-
-        // Jika sukses, redirect atau kembali tanpa mengirim respons JSON
-        return redirect()->route('users.index');
-
-    } catch (\Exception $e) {
-        // Jika terjadi kesalahan, kembalikan respons JSON dengan pesan error
-        return response()->json(['message' => 'Terjadi kesalahan saat memperbarui user', 'error' => $e->getMessage()], 500);
     }
+
+    return redirect()->back()->with('success', 'Data user berhasil diperbarui.');
 }
-
-
 
     /**
      * Remove the user from storage.

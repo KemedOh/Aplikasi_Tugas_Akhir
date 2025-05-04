@@ -145,33 +145,33 @@
                                 </thead>
                                 <tbody>
                                     @foreach($users as $index => $user)
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $index + 1 }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->name }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->email }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->role->role }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->tanggal_lahir }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->jenis_kelamin }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->asal_sekolah }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->nomor_telepon }}</td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->nama_ayah }} & {{ $user->nama_ibu }}<br>
-                                                <small
-                                                    class="text-gray-500 dark:text-gray-400">{{ $user->nomor_telepon_ortu }}</small>
-                                            </td>
-                                            <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                                {{ $user->created_at ? $user->created_at->format('Y-m-d H:i:s') : '-' }}
-                                            </td>
+                                                                                    <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $index + 1 }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->name }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->email }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->role->role }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->tanggal_lahir }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->jenis_kelamin }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->asal_sekolah }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->nomor_telepon }}</td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->nama_ayah }} & {{ $user->nama_ibu }}<br>
+                                                                                            <small
+                                                                                                class="text-gray-500 dark:text-gray-400">{{ $user->nomor_telepon_ortu }}</small>
+                                                                                        </td>
+                                                                                        <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
+                                                                                            {{ $user->created_at ? $user->created_at->format('Y-m-d H:i:s') : '-' }}
+                                                                                        </td>
                                         <td class="border-b border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-200">
-                                            @if (auth()->user()->role === 'superadmin')
+                                            @if (auth()->user()->role_id === 3) <!-- Superadmin (role_id 3) -->
                                                 @if(auth()->id() !== $user->id)
                                                     <!-- Tombol untuk superadmin ke user lain -->
                                                     <button data-user='@json($user)' onclick="openEditModal(this)"
@@ -188,7 +188,8 @@
                                                         </button>
                                                     </form>
                                                 @endif
-                                            @elseif (auth()->user()->role === 'admin' && $user->role === 'mahasiswa')
+                                            @elseif (auth()->user()->role_id === 2 && $user->role_id === 1)
+                                                <!-- Admin (role_id 2) hanya bisa ke Mahasiswa (role_id 1) -->
                                                 <!-- Tombol untuk admin hanya ke mahasiswa -->
                                                 <button data-user='@json($user)' onclick="openEditModal(this)"
                                                     class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all hover:scale-105 mr-2">
@@ -206,9 +207,7 @@
                                             @endif
                                         </td>
 
-
-
-                                        </tr>
+                                                                                    </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -332,7 +331,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('users.update', ['user' => $user->id]) }}" class="space-y-3">
+        <form  id="editUserForm"  method="POST" action="" class="space-y-3">
             @csrf
             @method('PUT')
 
@@ -375,20 +374,22 @@
                 required>
                 <option value="">-- Pilih Role --</option>
                 @foreach($roles as $role)
-                    <option value="{{ $role->id }}">{{ $role->role }}</option>
+                    <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>
+                        {{ $role->role }}
+                    </option>
                 @endforeach
             </select>
 
             <!-- Field Tambahan Mahasiswa -->
+
             <div id="editMahasiswaFields" class="hidden">
                 <input type="date" name="tanggal_lahir" id="editTanggalLahir"
                     class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
 
                 <select name="jenis_kelamin" id="editJenisKelamin"
                     class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
-                    <option value="">-- Jenis Kelamin --</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
+                    <option value="L" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="P" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
                 </select>
 
                 <input type="text" name="asal_sekolah" id="editAsalSekolah" placeholder="Asal Sekolah"
@@ -406,7 +407,6 @@
                 <input type="text" name="nomor_telepon_ortu" id="editNomorTeleponOrtu" placeholder="No. Telepon Ortu"
                     class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600" required>
             </div>
-
             <!-- Button -->
             <div class="flex justify-end">
                 <button type="submit"
@@ -454,49 +454,49 @@
     });
 </script>
 <script>
-    const editModal = document.getElementById('editModal');
-    const editRole = document.getElementById('editRole');
-    const editMahasiswaFields = document.getElementById('editMahasiswaFields');
+    document.addEventListener("DOMContentLoaded", function () {
+        const addRoleSelect = document.getElementById('addRole');
+        const addFields = document.getElementById('addFields');
 
-    function openEditModal(button) {
-        const user = JSON.parse(button.getAttribute('data-user'));
+        // Fungsi untuk menyembunyikan/memunculkan field dan tetap kirim data
+        function toggleFieldsBasedOnRole() {
+            const selectedRole = addRoleSelect.value;
 
-        // Mengisi data di form
-        document.getElementById('editUserId').value = user.id;
-        document.getElementById('editName').value = user.name;
-        document.getElementById('editEmail').value = user.email;
-        document.getElementById('editRole').value = user.role_id;
+            if (selectedRole == 1) { // Role Mahasiswa
+                addFields.classList.remove('hidden');
+                // Menambahkan validasi field jika diperlukan
+                addFields.querySelectorAll('input, select').forEach(input => {
+                    input.required = true;
+                    input.disabled = false;  // Mengaktifkan input untuk mahasiswa
+                });
+            } else {
+                addFields.classList.add('hidden');
+                // Masih kirim data mahasiswa meskipun disembunyikan
+                addFields.querySelectorAll('input, select').forEach(input => {
+                    input.required = false;
+                    input.disabled = true;  // Menonaktifkan input saat bukan mahasiswa
+                });
 
-        // Untuk field mahasiswa
-        document.getElementById('editTanggalLahir').value = user.tanggal_lahir || '';
-        document.getElementById('editJenisKelamin').value = user.jenis_kelamin || '';
-        document.getElementById('editAsalSekolah').value = user.asal_sekolah || '';
-        document.getElementById('editNomorTelepon').value = user.nomor_telepon || '';
-        document.getElementById('editNamaAyah').value = user.nama_ayah || '';
-        document.getElementById('editNamaIbu').value = user.nama_ibu || '';
-        document.getElementById('editNomorTeleponOrtu').value = user.nomor_telepon_ortu || '';
-
-        // Menyesuaikan tampilan field Mahasiswa
-        toggleMahasiswaFieldsEdit();
-
-        // Tampilkan modal
-        editModal.classList.remove('hidden');
-    }
-
-    function closeEditModal() {
-        editModal.classList.add('hidden');
-    }
-
-    function toggleMahasiswaFieldsEdit() {
-        const role = editRole.value;
-        // Misalkan ID untuk 'Mahasiswa' adalah 1, kamu bisa sesuaikan dengan ID yang ada di database
-        if (role === '1') { // Sesuaikan dengan ID 'Mahasiswa' di database
-            editMahasiswaFields.classList.remove('hidden');
-        } else {
-            editMahasiswaFields.classList.add('hidden');
+                // Menyisipkan input hidden untuk data mahasiswa yang tetap perlu dikirim
+                addFields.querySelectorAll('input, select').forEach(input => {
+                    if (input.name !== "role_id") {
+                        let hiddenInput = document.createElement("input");
+                        hiddenInput.type = "hidden";
+                        hiddenInput.name = input.name;
+                        hiddenInput.value = input.value;
+                        addFields.appendChild(hiddenInput);
+                    }
+                });
+            }
         }
-    }
+
+        // Panggil saat page load dan saat memilih role baru
+        toggleFieldsBasedOnRole();
+        addRoleSelect.addEventListener('change', toggleFieldsBasedOnRole);
+    });
 </script>
+
+
 <script>
     function adjustNumber() {
             let start = parseInt(document.getElementById("start_number").value);
@@ -513,6 +513,76 @@
             }
     }
 </script>
+<script>
+    const editModal = document.getElementById('editModal');
+    const editRole = document.getElementById('editRole');
+    const editMahasiswaFields = document.getElementById('editMahasiswaFields');
+    const editRoleSelect = document.getElementById('editRole'); // Pastikan ini sudah sesuai
+    const form = document.getElementById('editUserForm');
+
+
+    // Fungsi untuk membuka modal edit dan mengisi data
+    function openEditModal(button) {
+        const user = JSON.parse(button.getAttribute('data-user'));
+
+        // Mengisi data di form
+        document.getElementById('editUserId').value = user.id;
+        document.getElementById('editName').value = user.name;
+        document.getElementById('editEmail').value = user.email;
+        document.getElementById('editRole').value = user.role_id;
+        form.action = `/users/${user.id}`; 
+        // Untuk field mahasiswa
+        document.getElementById('editTanggalLahir').value = user.tanggal_lahir || '';
+        document.getElementById('editJenisKelamin').value = user.jenis_kelamin || '';
+        document.getElementById('editAsalSekolah').value = user.asal_sekolah || '';
+        document.getElementById('editNomorTelepon').value = user.nomor_telepon || '';
+        document.getElementById('editNamaAyah').value = user.nama_ayah || '';
+        document.getElementById('editNamaIbu').value = user.nama_ibu || '';
+        document.getElementById('editNomorTeleponOrtu').value = user.nomor_telepon_ortu || '';
+
+        // Menyesuaikan tampilan field Mahasiswa
+        toggleMahasiswaFieldsBasedOnRole();
+
+        // Tampilkan modal
+        editModal.classList.remove('hidden');
+    }
+
+    // Fungsi untuk menutup modal
+    function closeEditModal() {
+        editModal.classList.add('hidden');
+    }
+
+    // Fungsi untuk menyesuaikan tampilan field mahasiswa berdasarkan role yang dipilih
+    function toggleMahasiswaFieldsBasedOnRole() {
+        const selectedRole = parseInt(editRole.value);
+
+        if (selectedRole === 1) { // Sesuaikan dengan ID 'Mahasiswa' di database
+            // Role Mahasiswa, tampilkan & aktifkan field
+            editMahasiswaFields.classList.remove('hidden');
+            editMahasiswaFields.querySelectorAll('input, select').forEach(input => {
+                input.disabled = false;
+                input.required = input.hasAttribute('data-original-required'); // hanya aktifkan jika awalnya required
+            });
+        } else {
+            // Bukan Mahasiswa, sembunyikan dan nonaktifkan
+            editMahasiswaFields.classList.add('hidden');
+            editMahasiswaFields.querySelectorAll('input, select').forEach(input => {
+                input.disabled = true;
+                input.required = false;
+            });
+        }
+    }
+
+    // Event listener untuk menangani perubahan role di dropdown
+    editRole.addEventListener('change', toggleMahasiswaFieldsBasedOnRole);
+
+    // Memastikan field mahasiswa tampil saat modal dibuka dengan role yang benar
+    toggleMahasiswaFieldsBasedOnRole(); 
+</script>
+
+
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Toggle Tambah
